@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../profile/screens/settings_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileWidget extends StatelessWidget {
   final int availableCoins;
   final VoidCallback onCoinOptionsTap;
   final VoidCallback onWatchAdsTap;
   final VoidCallback onLogoutTap;
 
-  const ProfileScreen({
+  const ProfileWidget({
     super.key,
     required this.availableCoins,
     required this.onCoinOptionsTap,

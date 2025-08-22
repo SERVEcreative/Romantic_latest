@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
-class DashboardBottomNavigation extends StatelessWidget {
+class BottomNavigationWidget extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
 
-  const DashboardBottomNavigation({
+  const BottomNavigationWidget({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,

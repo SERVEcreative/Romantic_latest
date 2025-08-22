@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../../coins/services/coin_service.dart';
 import '../../coins/services/admob_service.dart';
 import '../services/dashboard_service.dart';
-import '../widgets/dashboard/home_screen.dart';
+import '../widgets/home/home_widget.dart';
 import 'calling_screen.dart';
 import 'messaging_screen.dart';
-import '../widgets/dashboard/profile_screen.dart';
-import '../widgets/dashboard/bottom_navigation.dart';
+import '../widgets/profile/profile_widget.dart';
+import '../widgets/navigation/bottom_navigation_widget.dart';
 import '../../../shared/models/user_profile.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -79,7 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _getCurrentScreen() {
     switch (_selectedIndex) {
       case 0:
-        return HomeScreen(
+        return HomeWidget(
           availableCoins: _availableCoins,
           onActionPressed: _handleActionPressed,
           onCoinOptionsTap: _showCoinOptions,
@@ -89,14 +89,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 2:
         return _buildMessagesScreen();
       case 3:
-        return ProfileScreen(
+        return ProfileWidget(
           availableCoins: _availableCoins,
           onCoinOptionsTap: _showCoinOptions,
           onWatchAdsTap: _watchAdForCoins,
           onLogoutTap: _showLogoutDialog,
         );
       default:
-        return HomeScreen(
+        return HomeWidget(
           availableCoins: _availableCoins,
           onActionPressed: _handleActionPressed,
           onCoinOptionsTap: _showCoinOptions,
@@ -409,7 +409,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _getCurrentScreen(),
-      bottomNavigationBar: DashboardBottomNavigation(
+      bottomNavigationBar: BottomNavigationWidget(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),

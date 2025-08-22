@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/models/sample_data.dart';
 import '../../../../shared/widgets/romantic_profile_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeWidget extends StatelessWidget {
   final int availableCoins;
   final Function(String, int, String) onActionPressed;
   final VoidCallback onCoinOptionsTap;
 
-  const HomeScreen({
+  const HomeWidget({
     super.key,
     required this.availableCoins,
     required this.onActionPressed,
