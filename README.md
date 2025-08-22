@@ -1,213 +1,178 @@
-# 💕 Romantic Dating App
+# Romantic App - Full Stack Project
 
-A beautiful Flutter dating application with a romantic theme, featuring phone number authentication, profile management, and a coin-based interaction system.
+A complete dating application with Flutter frontend and Node.js/Express backend.
 
-## 🌟 Features
-
-### 🔐 Authentication
-- **Phone Number Login**: Secure phone number-based authentication
-- **Romantic UI**: Beautiful gradient backgrounds and smooth animations
-- **Form Validation**: Real-time phone number validation
-
-### 👥 Profile Management
-- **User Profiles**: Comprehensive profile editing with multiple fields
-- **Settings Screen**: Complete profile customization options
-- **Profile Picture**: Change profile picture functionality
-- **Preferences**: Notification and location sharing settings
-
-### 💰 Coin System
-- **Dual Earning Methods**:
-  - **Watch Ads**: Free coin earning through video advertisements
-  - **Purchase Coins**: Premium coin packages with real money
-- **Cost Management**: 
-  - Call interactions: 10 coins
-  - Chat interactions: 5 coins
-  - Ad rewards: 5 coins per ad
-- **Balance Tracking**: Real-time coin balance display
-
-### 💬 Interaction Features
-- **Romantic Profiles**: Beautiful glass-morphism profile cards
-- **Call & Chat**: Coin-based communication with other users
-- **Online Status**: Real-time online/offline indicators
-- **Location Display**: User location information
-
-### 🎨 UI/UX
-- **Romantic Theme**: Pink gradient backgrounds and romantic styling
-- **Smooth Animations**: Fade and slide transitions
-- **Glass Morphism**: Modern glass effect design
-- **Responsive Design**: Works on all screen sizes
-
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```
-lib/
-├── models/                    # Data models
-│   ├── user_profile.dart     # User profile data structure
-│   └── coin_package.dart     # Coin package data structure
-├── services/                  # Business logic services
-│   ├── coin_service.dart     # Coin management logic
-│   └── ad_service.dart       # Ad watching functionality
-├── data/                     # Sample and static data
-│   └── sample_data.dart      # Mock user profiles
-├── widgets/                   # Reusable UI components
-│   ├── romantic_profile_card.dart  # Profile card widget
-│   └── coin_dialogs.dart     # Coin-related dialogs
-├── screens/                   # App screens
-│   ├── login_screen.dart     # Phone number login
-│   ├── dashboard_screen.dart # Main dashboard
-│   └── settings_screen.dart  # Profile settings
-└── main.dart                 # App entry point
+D:\Affair/
+├── frontend/          # Flutter Mobile App
+│   ├── lib/          # Flutter source code
+│   ├── android/      # Android configuration
+│   ├── ios/          # iOS configuration
+│   ├── pubspec.yaml  # Flutter dependencies
+│   └── ...
+├── backend/          # Node.js/Express API Server
+│   ├── src/          # Source code
+│   ├── package.json  # Node.js dependencies
+│   ├── .env          # Environment variables
+│   └── ...
+├── assets/           # Shared assets
+└── README.md         # This file
 ```
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### Prerequisites
-- Flutter SDK (3.0 or higher)
-- Dart SDK (2.17 or higher)
-- Android Studio / VS Code
-- Android Emulator or Physical Device
+### Frontend (Flutter App)
 
-### Installation
-
-1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd romantic-dating-app
-   ```
-
-2. **Install dependencies**
-   ```bash
+cd frontend
    flutter pub get
-   ```
-
-3. **Run the app**
-   ```bash
    flutter run
    ```
 
-## 📦 Dependencies
+### Backend (Node.js API)
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.2
-  intl_phone_field: ^3.2.0      # Phone number input
-  flutter_svg: ^2.0.9          # SVG support
-  google_fonts: ^6.1.0         # Custom fonts
+```bash
+cd backend
+npm install
+npm start
 ```
 
-## 🎯 Key Components
+## 📱 Frontend Features
 
-### Models
-- **UserProfile**: Structured user data with type safety
-- **CoinPackage**: Coin purchase package definitions
+- **Phone Authentication**: OTP-based login with Twilio integration
+- **User Profiles**: Create and manage dating profiles
+- **Matching System**: Like/pass profiles and get matches
+- **Messaging**: Real-time chat with matches
+- **Video Calls**: Agora.io integration for video calls
+- **Coin System**: Earn coins by watching ads
+- **Modern UI**: Beautiful, responsive design
 
-### Services
-- **CoinService**: Centralized coin management logic
-- **AdService**: Ad watching and reward system
+## 🔧 Backend Features
 
-### Widgets
-- **RomanticProfileCard**: Reusable profile display component
-- **CoinDialogs**: Modular dialog system for coin operations
+- **RESTful API**: Complete CRUD operations
+- **Authentication**: JWT-based auth with phone verification
+- **Database**: Supabase PostgreSQL integration
+- **Real-time**: WebSocket support for messaging
+- **File Upload**: Image upload to Supabase Storage
+- **Video Calls**: Agora.io token generation
+- **SMS**: Twilio integration for OTP
+- **Security**: Rate limiting, CORS, Helmet
 
-### Screens
-- **LoginScreen**: Phone number authentication
-- **DashboardScreen**: Main app interface with organized structure
-- **SettingsScreen**: Profile management interface
+## 🛠️ Tech Stack
 
-## 🔧 Code Organization Benefits
+### Frontend
+- **Framework**: Flutter
+- **State Management**: Provider
+- **HTTP Client**: http package
+- **Ads**: Google Mobile Ads (AdMob)
+- **Video Calls**: Agora Flutter SDK
 
-### ✅ Maintainability
-- **Separation of Concerns**: Each file has a single responsibility
-- **Modular Design**: Easy to modify individual components
-- **Type Safety**: Strong typing with model classes
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: JWT
+- **SMS**: Twilio
+- **Video Calls**: Agora.io
+- **File Storage**: Supabase Storage
+- **Logging**: Winston
+- **Validation**: Joi
 
-### ✅ Scalability
-- **Service Layer**: Business logic separated from UI
-- **Reusable Components**: Widgets can be used across screens
-- **Data Models**: Structured data handling
+## 📋 API Endpoints
 
-### ✅ Readability
-- **Clear Structure**: Logical file organization
-- **Consistent Naming**: Descriptive file and class names
-- **Documented Code**: Well-commented functionality
+### Authentication
+- `POST /api/auth/send-otp` - Send OTP
+- `POST /api/auth/verify-otp` - Verify OTP
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login user
 
-### ✅ Testing
-- **Isolated Components**: Easy to unit test individual parts
-- **Service Testing**: Business logic can be tested separately
-- **Widget Testing**: UI components can be tested independently
+### Users
+- `GET /api/users/discover` - Get discover profiles
+- `POST /api/users/like` - Like a profile
+- `POST /api/users/pass` - Pass a profile
+- `GET /api/users/matches` - Get matches
 
-## 🎨 Customization
+### Messaging
+- `GET /api/messages/conversations` - Get conversations
+- `POST /api/messages/send` - Send message
 
-### Colors
-The app uses a romantic pink theme. To customize:
-```dart
-// In main.dart
-colorScheme: ColorScheme.fromSeed(
-  seedColor: Colors.pink,  // Change this color
-  brightness: Brightness.light,
-),
+### Video Calls
+- `POST /api/calls/initiate` - Start call
+- `POST /api/calls/:callId/accept` - Accept call
+
+### Coins
+- `GET /api/coins/balance` - Get balance
+- `POST /api/coins/earn` - Earn coins
+
+## 🔐 Environment Variables
+
+### Backend (.env)
+```env
+# Server
+NODE_ENV=development
+PORT=3000
+
+# JWT
+JWT_SECRET=your-jwt-secret
+JWT_REFRESH_SECRET=your-refresh-secret
+
+# Supabase
+SUPABASE_URL=your-supabase-url
+SUPABASE_ANON_KEY=your-supabase-anon-key
+
+# Twilio
+TWILIO_ACCOUNT_SID=your-twilio-sid
+TWILIO_AUTH_TOKEN=your-twilio-token
+TWILIO_PHONE_NUMBER=your-twilio-number
+
+# Agora
+AGORA_APP_ID=your-agora-app-id
+AGORA_APP_CERTIFICATE=your-agora-certificate
 ```
 
-### Fonts
-Google Fonts Poppins is used throughout. To change:
-```dart
-// In any screen
-style: GoogleFonts.poppins(  // Change to desired font
-  fontSize: 16,
-  fontWeight: FontWeight.w600,
-),
-```
+## 🚀 Deployment
 
-### Animations
-Animation durations and curves can be modified in:
-```dart
-// In dashboard_screen.dart
-duration: const Duration(milliseconds: 1200),  // Adjust timing
-curve: Curves.easeInOut,  // Change animation curve
-```
+### Frontend
+- Build APK: `flutter build apk`
+- Build iOS: `flutter build ios`
+- Deploy to stores via Flutter
 
-## 🚀 Future Enhancements
+### Backend
+- Deploy to Railway/Render/Heroku
+- Set environment variables
+- Connect to Supabase production
 
-### Planned Features
-- [ ] **Real-time Chat**: Implement actual messaging functionality
-- [ ] **Video Calls**: Add video calling capabilities
-- [ ] **Push Notifications**: Real-time notification system
-- [ ] **User Matching**: Algorithm-based user matching
-- [ ] **Photo Gallery**: Multiple photo upload support
-- [ ] **Location Services**: Real-time location tracking
-- [ ] **Payment Integration**: Real payment processing
-- [ ] **Analytics**: User behavior tracking
+## 📝 Development
 
-### Technical Improvements
-- [ ] **State Management**: Implement Provider/Riverpod
-- [ ] **API Integration**: Connect to backend services
-- [ ] **Database**: Local storage with SQLite/Hive
-- [ ] **Caching**: Image and data caching
-- [ ] **Error Handling**: Comprehensive error management
-- [ ] **Unit Tests**: Complete test coverage
-- [ ] **CI/CD**: Automated testing and deployment
+### Adding New Features
+1. **Frontend**: Add screens in `frontend/lib/screens/`
+2. **Backend**: Add routes in `backend/src/routes/`
+3. **Database**: Update schema in Supabase
+4. **API**: Update controllers in `backend/src/controllers/`
+
+### Code Style
+- **Frontend**: Follow Flutter conventions
+- **Backend**: Use ESLint and Prettier
+- **Git**: Conventional commits
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch
+3. Make changes
+4. Test thoroughly
+5. Submit pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- **Flutter Team**: For the amazing framework
-- **Google Fonts**: For beautiful typography
-- **Material Design**: For design inspiration
-- **Open Source Community**: For various packages and tools
+For support, email support@romanticapp.com or create an issue.
 
 ---
 
-**Made with ❤️ for romantic connections**
+**Built with ❤️ using Flutter and Node.js**

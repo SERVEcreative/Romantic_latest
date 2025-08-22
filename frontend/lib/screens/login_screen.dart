@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dashboard_screen.dart';
+import '../services/api_service.dart';
+import 'otp_verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen>
   final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  String _completePhoneNumber = ''; // Store complete phone number with country code
 
   @override
   void initState() {
@@ -59,33 +61,67 @@ class _LoginScreenState extends State<LoginScreen>
       setState(() {
         _isLoading = true;
       });
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+
+      try {
+        // Send OTP via API
+        final result = await ApiService.sendOTP(_completePhoneNumber);
         
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const DashboardScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 800),
-          ),
-        );
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          
+          if (result['success']) {
+            // Navigate to OTP verification screen
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    OTPVerificationScreen(phoneNumber: _completePhoneNumber),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1.0, 0.0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+                transitionDuration: const Duration(milliseconds: 300),
+              ),
+            );
+          } else {
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Failed to send OTP'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -102,26 +138,37 @@ class _LoginScreenState extends State<LoginScreen>
             opacity: _fadeAnimation,
             child: SlideTransition(
               position: _slideAnimation,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Romantic Header
-                    _buildHeader(),
-                    const SizedBox(height: 60),
-                    
-                    // Login Form
-                    _buildLoginForm(),
-                    const SizedBox(height: 40),
-                    
-                    // Login Button
-                    _buildLoginButton(),
-                    const SizedBox(height: 30),
-                    
-                    // Romantic Footer
-                    _buildFooter(),
-                  ],
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height - 
+                              MediaQuery.of(context).padding.top - 
+                              MediaQuery.of(context).padding.bottom,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Romantic Header
+                        _buildHeader(),
+                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 20 : 30),
+                        
+                        // Login Form
+                        _buildLoginForm(),
+                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 25),
+                        
+                        // Login Button
+                        _buildLoginButton(),
+                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 10 : 15),
+                        
+                        // Romantic Footer (hide when keyboard is open)
+                        if (MediaQuery.of(context).viewInsets.bottom == 0)
+                          _buildFooter(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -236,15 +283,16 @@ class _LoginScreenState extends State<LoginScreen>
                 color: Colors.white,
                 fontSize: 16,
               ),
+              initialCountryCode: 'IN', // Set to India for 10-digit numbers
               onChanged: (phone) {
-                // Handle phone number change
+                _completePhoneNumber = phone.completeNumber;
               },
               validator: (phone) {
                 if (phone == null || phone.number.isEmpty) {
                   return 'Please enter your phone number';
                 }
-                if (phone.number.length < 10) {
-                  return 'Please enter a valid phone number';
+                if (phone.number.length != 10) {
+                  return 'Please enter a valid 10-digit phone number';
                 }
                 return null;
               },
