@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
 import 'otp_verification_screen.dart';
 

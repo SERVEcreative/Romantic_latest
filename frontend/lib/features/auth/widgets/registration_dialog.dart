@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
-import '../screens/dashboard_screen.dart';
+import '../../dashboard/screens/dashboard_screen.dart';
 
 class RegistrationDialog extends StatefulWidget {
   final String phoneNumber;

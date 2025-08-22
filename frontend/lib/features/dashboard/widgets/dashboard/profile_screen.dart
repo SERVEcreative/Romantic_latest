@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../screens/settings_screen.dart';
+import '../../../profile/screens/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final int availableCoins;

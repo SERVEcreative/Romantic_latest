@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/coin_service.dart';
-import '../services/admob_service.dart';
-import '../widgets/coin_dialogs.dart';
+import '../../coins/services/admob_service.dart';
+import '../../coins/widgets/coin_dialogs.dart';
 
 class DashboardService {
   static void handleActionPressed(

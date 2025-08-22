@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../data/sample_data.dart';
-import '../../widgets/romantic_profile_card.dart';
-import '../../services/coin_service.dart';
-import '../../widgets/coin_dialogs.dart';
+import '../../../../shared/models/sample_data.dart';
+import '../../../../shared/widgets/romantic_profile_card.dart';
 
 class HomeScreen extends StatelessWidget {
   final int availableCoins;

@@ -1,4 +1,5 @@
-import '../models/coin_package.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../shared/models/coin_package.dart';
 
 class CoinService {
   static const int _callCost = 10;

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
 import '../widgets/registration_dialog.dart';
-import 'dashboard_screen.dart';
+import '../../dashboard/screens/dashboard_screen.dart';
 
 class OTPVerificationScreen extends StatefulWidget {
   final String phoneNumber;

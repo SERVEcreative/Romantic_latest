@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/coin_service.dart';
-import '../services/admob_service.dart';
+import '../../coins/services/coin_service.dart';
+import '../../coins/services/admob_service.dart';
 import '../services/dashboard_service.dart';
 import '../widgets/dashboard/home_screen.dart';
 import '../widgets/dashboard/calls_screen.dart';

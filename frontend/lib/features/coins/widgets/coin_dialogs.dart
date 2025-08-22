@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../models/coin_package.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../shared/models/coin_package.dart';
 import '../services/coin_service.dart';
 
 class CoinDialogs {

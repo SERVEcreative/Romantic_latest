@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_profile.dart';
-import '../services/coin_service.dart';
+import '../../features/coins/services/coin_service.dart';
 import 'dart:io'; // Added for File
 import 'dart:ui'; // Added for ImageFilter
 

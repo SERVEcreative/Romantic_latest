@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_colors.dart';
 import '../services/coin_service.dart';
 
 class AdMobService {
