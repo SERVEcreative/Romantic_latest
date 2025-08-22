@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_profile.dart';
 import '../../features/coins/services/coin_service.dart';
+import '../../features/dashboard/screens/calling_screen.dart';
+import '../../features/dashboard/screens/messaging_screen.dart';
 import 'dart:io'; // Added for File
 import 'dart:ui'; // Added for ImageFilter
 
-class RomanticProfileCard extends StatelessWidget {
+class RomanticProfileCard extends StatefulWidget {
   final UserProfile profile;
   final int availableCoins;
   final Function(String, int, String) onActionPressed;
@@ -16,6 +18,12 @@ class RomanticProfileCard extends StatelessWidget {
     required this.availableCoins,
     required this.onActionPressed,
   });
+
+  @override
+  State<RomanticProfileCard> createState() => _RomanticProfileCardState();
+}
+
+class _RomanticProfileCardState extends State<RomanticProfileCard> {
 
   @override
   Widget build(BuildContext context) {
@@ -144,21 +152,21 @@ class RomanticProfileCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      profile.name,
-                      style: GoogleFonts.poppins(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.5),
-                            offset: const Offset(0, 1),
-                            blurRadius: 3,
-                          ),
-                        ],
-                      ),
-                    ),
+                                         Text(
+                       widget.profile.name,
+                       style: GoogleFonts.poppins(
+                         fontSize: 22,
+                         fontWeight: FontWeight.bold,
+                         color: Colors.white,
+                         shadows: [
+                           Shadow(
+                             color: Colors.black.withOpacity(0.5),
+                             offset: const Offset(0, 1),
+                             blurRadius: 3,
+                           ),
+                         ],
+                       ),
+                     ),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -166,14 +174,14 @@ class RomanticProfileCard extends StatelessWidget {
                         color: Colors.pink.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
-                        '${profile.age}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                                             child: Text(
+                         '${widget.profile.age}',
+                         style: GoogleFonts.poppins(
+                           fontSize: 12,
+                           fontWeight: FontWeight.bold,
+                           color: Colors.white,
+                         ),
+                       ),
                     ),
                   ],
                 ),
@@ -202,20 +210,20 @@ class RomanticProfileCard extends StatelessWidget {
                       color: Colors.white,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      profile.location,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.5),
-                            offset: const Offset(0, 1),
-                            blurRadius: 2,
-                          ),
-                        ],
-                      ),
-                    ),
+                                         Text(
+                       widget.profile.location,
+                       style: GoogleFonts.poppins(
+                         fontSize: 14,
+                         color: Colors.white,
+                         shadows: [
+                           Shadow(
+                             color: Colors.black.withOpacity(0.5),
+                             offset: const Offset(0, 1),
+                             blurRadius: 2,
+                           ),
+                         ],
+                       ),
+                     ),
                   ],
                 ),
               ),
@@ -234,23 +242,23 @@ class RomanticProfileCard extends StatelessWidget {
                   color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
-                  profile.bio,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: Colors.white,
-                    height: 1.3,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.5),
-                        offset: const Offset(0, 1),
-                        blurRadius: 2,
-                      ),
-                    ],
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                                 child: Text(
+                   widget.profile.bio,
+                   style: GoogleFonts.poppins(
+                     fontSize: 13,
+                     color: Colors.white,
+                     height: 1.3,
+                     shadows: [
+                       Shadow(
+                         color: Colors.black.withOpacity(0.5),
+                         offset: const Offset(0, 1),
+                         blurRadius: 2,
+                       ),
+                     ],
+                   ),
+                   maxLines: 2,
+                   overflow: TextOverflow.ellipsis,
+                 ),
               ),
             ),
           ),
@@ -261,9 +269,9 @@ class RomanticProfileCard extends StatelessWidget {
 
   Widget _buildProfileImage() {
     // Check if the image path is a local asset
-    if (profile.image.startsWith('assets/')) {
+    if (widget.profile.image.startsWith('assets/')) {
       return Image.asset(
-        profile.image,
+        widget.profile.image,
         width: double.infinity,
         height: 480, // Updated height
         fit: BoxFit.cover,
@@ -273,9 +281,9 @@ class RomanticProfileCard extends StatelessWidget {
       );
     }
     // Check if it's a local file path
-    else if (profile.image.startsWith('/') || profile.image.startsWith('file://')) {
+    else if (widget.profile.image.startsWith('/') || widget.profile.image.startsWith('file://')) {
       return Image.file(
-        File(profile.image.replaceFirst('file://', '')),
+        File(widget.profile.image.replaceFirst('file://', '')),
         width: double.infinity,
         height: 480, // Updated height
         fit: BoxFit.cover,
@@ -285,9 +293,9 @@ class RomanticProfileCard extends StatelessWidget {
       );
     }
     // Check if it's a network URL
-    else if (profile.image.startsWith('http://') || profile.image.startsWith('https://')) {
+    else if (widget.profile.image.startsWith('http://') || widget.profile.image.startsWith('https://')) {
       return Image.network(
-        profile.image,
+        widget.profile.image,
         width: double.infinity,
         height: 480, // Updated height
         fit: BoxFit.cover,
@@ -326,14 +334,14 @@ class RomanticProfileCard extends StatelessWidget {
               color: Colors.grey[400],
             ),
             const SizedBox(height: 16),
-            Text(
-              profile.name[0].toUpperCase(),
-              style: GoogleFonts.poppins(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
-            ),
+                         Text(
+               widget.profile.name[0].toUpperCase(),
+               style: GoogleFonts.poppins(
+                 fontSize: 48,
+                 fontWeight: FontWeight.bold,
+                 color: Colors.grey[600],
+               ),
+             ),
           ],
         ),
       ),
@@ -343,8 +351,8 @@ class RomanticProfileCard extends StatelessWidget {
   Widget _buildOnlineIndicator() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: profile.online ? Colors.green : Colors.grey.withOpacity(0.7),
+             decoration: BoxDecoration(
+         color: widget.profile.online ? Colors.green : Colors.grey.withOpacity(0.7),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -366,14 +374,14 @@ class RomanticProfileCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 4),
-          Text(
-            profile.online ? 'Online' : 'Offline',
-            style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
+                     Text(
+             widget.profile.online ? 'Online' : 'Offline',
+             style: GoogleFonts.poppins(
+               fontSize: 10,
+               fontWeight: FontWeight.w500,
+               color: Colors.white,
+             ),
+           ),
         ],
       ),
     );
@@ -390,7 +398,7 @@ class RomanticProfileCard extends StatelessWidget {
               Icons.call,
               Colors.green,
               CoinService.callCost,
-              () => onActionPressed('Call', CoinService.callCost, profile.name),
+              () => _handleCallAction(),
             ),
           ),
           const SizedBox(width: 12),
@@ -400,7 +408,7 @@ class RomanticProfileCard extends StatelessWidget {
               Icons.chat_bubble,
               Colors.blue,
               CoinService.chatCost,
-              () => onActionPressed('Chat', CoinService.chatCost, profile.name),
+              () => _handleChatAction(),
             ),
           ),
         ],
@@ -408,8 +416,59 @@ class RomanticProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {
-    final hasEnoughCoins = availableCoins >= cost;
+     void _handleCallAction() {
+     widget.onActionPressed('Call', CoinService.callCost, widget.profile.name);
+     // Navigate to calling screen
+     Navigator.push(
+       context,
+       MaterialPageRoute(
+         builder: (context) => CallingScreen(
+           caller: UserProfile(
+             id: widget.profile.id,
+             name: widget.profile.name,
+             fullName: widget.profile.fullName,
+             age: widget.profile.age,
+             gender: widget.profile.gender,
+             bio: widget.profile.bio,
+             location: widget.profile.location,
+             image: widget.profile.image,
+             photoUrl: widget.profile.image.startsWith('http') ? widget.profile.image : null,
+             online: widget.profile.online,
+             lastSeen: widget.profile.lastSeen,
+           ),
+           isIncoming: false,
+         ),
+       ),
+     );
+   }
+
+     void _handleChatAction() {
+     widget.onActionPressed('Chat', CoinService.chatCost, widget.profile.name);
+     // Navigate to messaging screen
+     Navigator.push(
+       context,
+       MaterialPageRoute(
+         builder: (context) => MessagingScreen(
+           recipient: UserProfile(
+             id: widget.profile.id,
+             name: widget.profile.name,
+             fullName: widget.profile.fullName,
+             age: widget.profile.age,
+             gender: widget.profile.gender,
+             bio: widget.profile.bio,
+             location: widget.profile.location,
+             image: widget.profile.image,
+             photoUrl: widget.profile.image.startsWith('http') ? widget.profile.image : null,
+             online: widget.profile.online,
+             lastSeen: widget.profile.lastSeen,
+           ),
+         ),
+       ),
+     );
+   }
+
+     Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {
+     final hasEnoughCoins = widget.availableCoins >= cost;
     
     return Container(
       height: 44,
