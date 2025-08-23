@@ -59,11 +59,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Container(
                   margin: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: Colors.white.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -181,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               width: 45,
               height: 45,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -213,10 +213,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: Colors.pink.withOpacity(0.1),
+              color: Colors.pink.withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.pink.withOpacity(0.3),
+                color: Colors.pink.withValues(alpha: 0.3),
                 width: 3,
               ),
             ),
@@ -235,7 +235,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: GoogleFonts.poppins(fontSize: 14),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pink.withOpacity(0.1),
+              backgroundColor: Colors.pink.withValues(alpha: 0.1),
               foregroundColor: Colors.pink,
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -435,7 +435,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       
       // Navigate back after a short delay
       Future.delayed(const Duration(seconds: 2), () {
-        Navigator.of(context).pop();
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
       });
     }
   }

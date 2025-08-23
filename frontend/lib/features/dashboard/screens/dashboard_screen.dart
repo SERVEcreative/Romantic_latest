@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../coins/services/coin_service.dart';
 import '../../coins/services/admob_service.dart';
+import '../../profile/screens/profile_screen.dart';
 import '../services/dashboard_service.dart';
 import '../widgets/home/home_widget.dart';
 import 'calling_screen.dart';
 import 'messaging_screen.dart';
-import '../widgets/profile/profile_widget.dart';
 import '../widgets/navigation/bottom_navigation_widget.dart';
 import '../../../shared/models/user_profile.dart';
+import '../../../core/utils/logger.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -37,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await AdMobService.initialize();
       AdMobService.loadRewardedAd();
     } catch (e) {
-      print('Failed to initialize ads: $e');
+      Logger.error('Failed to initialize ads', e);
     }
   }
 
@@ -68,10 +69,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DashboardService.showCoinOptions(context, _onCoinsChanged);
   }
 
-  void _watchAdForCoins() {
-    DashboardService.watchAdForCoins(context, _onCoinsChanged);
-  }
-
   void _showLogoutDialog() {
     DashboardService.showLogoutDialog(context);
   }
@@ -89,10 +86,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 2:
         return _buildMessagesScreen();
       case 3:
-        return ProfileWidget(
+        return ProfileScreen(
           availableCoins: _availableCoins,
           onCoinOptionsTap: _showCoinOptions,
-          onWatchAdsTap: _watchAdForCoins,
           onLogoutTap: _showLogoutDialog,
         );
       default:
@@ -111,8 +107,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
             Colors.white,
           ],
         ),
@@ -143,8 +139,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
             Colors.white,
           ],
         ),
@@ -229,7 +225,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -246,8 +242,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.pink.withOpacity(0.8),
-                    Colors.purple.withOpacity(0.6),
+                    Colors.pink.withValues(alpha: 0.8),
+                    Colors.purple.withValues(alpha: 0.6),
                   ],
                 ),
               ),
@@ -326,7 +322,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -343,8 +339,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.pink.withOpacity(0.8),
-                    Colors.purple.withOpacity(0.6),
+                    Colors.pink.withValues(alpha: 0.8),
+                    Colors.purple.withValues(alpha: 0.6),
                   ],
                 ),
               ),
@@ -392,7 +388,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.pink,
                     shape: BoxShape.circle,
                   ),

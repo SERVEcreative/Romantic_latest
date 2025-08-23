@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/constants/app_colors.dart';
 import '../../../shared/models/user_profile.dart';
 import 'calling_screen.dart';
 
@@ -143,8 +142,8 @@ class _MessagingScreenState extends State<MessagingScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.pink.withOpacity(0.1),
-              Colors.purple.withOpacity(0.05),
+              Colors.pink.withValues(alpha: 0.1),
+              Colors.purple.withValues(alpha: 0.05),
               Colors.white,
             ],
           ),
@@ -171,7 +170,7 @@ class _MessagingScreenState extends State<MessagingScreen>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -184,7 +183,7 @@ class _MessagingScreenState extends State<MessagingScreen>
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.pink.withOpacity(0.1),
+                color: Colors.pink.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -214,7 +213,7 @@ class _MessagingScreenState extends State<MessagingScreen>
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),
@@ -271,8 +270,8 @@ class _MessagingScreenState extends State<MessagingScreen>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.pink.withOpacity(0.8),
-            Colors.purple.withOpacity(0.6),
+            Colors.pink.withValues(alpha: 0.8),
+            Colors.purple.withValues(alpha: 0.6),
           ],
         ),
       ),
@@ -282,14 +281,14 @@ class _MessagingScreenState extends State<MessagingScreen>
                 widget.recipient.photoUrl!,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(
+                  return const Icon(
                     Icons.person,
                     color: Colors.white,
                     size: 20,
                   );
                 },
               )
-            : Icon(
+            : const Icon(
                 Icons.person,
                 color: Colors.white,
                 size: 20,
@@ -307,7 +306,7 @@ class _MessagingScreenState extends State<MessagingScreen>
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.pink.withOpacity(0.1),
+          color: Colors.pink.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
@@ -362,7 +361,7 @@ class _MessagingScreenState extends State<MessagingScreen>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -387,7 +386,7 @@ class _MessagingScreenState extends State<MessagingScreen>
                         style: GoogleFonts.poppins(
                           fontSize: 10,
                           color: isFromMe 
-                              ? Colors.white.withOpacity(0.7)
+                              ? Colors.white.withValues(alpha: 0.7)
                               : Colors.grey[500],
                         ),
                       ),
@@ -398,7 +397,7 @@ class _MessagingScreenState extends State<MessagingScreen>
                           size: 12,
                           color: message.isRead 
                               ? Colors.blue[300]
-                              : Colors.white.withOpacity(0.7),
+                              : Colors.white.withValues(alpha: 0.7),
                         ),
                       ],
                     ],
@@ -430,7 +429,7 @@ class _MessagingScreenState extends State<MessagingScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -481,7 +480,7 @@ class _MessagingScreenState extends State<MessagingScreen>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -578,7 +577,7 @@ class _MessagingScreenState extends State<MessagingScreen>
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.pink.withOpacity(0.1),
+          color: Colors.pink.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Icon(
@@ -600,7 +599,7 @@ class _MessagingScreenState extends State<MessagingScreen>
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: Colors.pink.withOpacity(0.3),
+              color: Colors.pink.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

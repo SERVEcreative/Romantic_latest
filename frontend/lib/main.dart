@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/constants/app_constants.dart';
 import 'core/constants/app_colors.dart';
+import 'core/utils/logger.dart';
 import 'features/auth/screens/login_screen.dart';
 
 void main() async {
@@ -11,9 +12,9 @@ void main() async {
   // Initialize AdMob with error handling
   try {
     await MobileAds.instance.initialize();
-    print('AdMob initialized successfully');
+    Logger.success('AdMob initialized successfully');
   } catch (e) {
-    print('AdMob initialization failed: $e');
+    Logger.error('AdMob initialization failed', e);
     // Continue app execution even if AdMob fails
   }
   

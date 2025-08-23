@@ -20,13 +20,13 @@ class BottomNavigationWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -41,7 +41,7 @@ class BottomNavigationWidget extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
@@ -54,7 +54,7 @@ class BottomNavigationWidget extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               selectedItemColor: Colors.pink,
-              unselectedItemColor: Colors.grey.withOpacity(0.6),
+              unselectedItemColor: Colors.grey.withValues(alpha: 0.6),
               selectedLabelStyle: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

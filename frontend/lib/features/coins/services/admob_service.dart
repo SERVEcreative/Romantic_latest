@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_colors.dart';
 import '../services/coin_service.dart';
+import '../../../core/utils/logger.dart';
 
 class AdMobService {
   static RewardedAd? _rewardedAd;
@@ -17,16 +16,16 @@ class AdMobService {
     try {
       await MobileAds.instance.initialize();
       _isInitialized = true;
-      print('AdMob service initialized successfully');
+      Logger.success('AdMob service initialized successfully');
     } catch (e) {
-      print('AdMob service initialization failed: $e');
+      Logger.error('AdMob service initialization failed', e);
       _isInitialized = false;
     }
   }
 
   static void loadRewardedAd() {
     if (!_isInitialized) {
-      print('AdMob not initialized, skipping ad load');
+      Logger.warning('AdMob not initialized, skipping ad load');
       return;
     }
     
@@ -38,17 +37,17 @@ class AdMobService {
           onAdLoaded: (RewardedAd ad) {
             _rewardedAd = ad;
             _isRewardedAdReady = true;
-            print('Rewarded ad loaded successfully');
+            Logger.success('Rewarded ad loaded successfully');
           },
           onAdFailedToLoad: (LoadAdError error) {
             _rewardedAd = null;
             _isRewardedAdReady = false;
-            print('Rewarded ad failed to load: $error');
+            Logger.error('Rewarded ad failed to load', error);
           },
         ),
       );
     } catch (e) {
-      print('Error loading rewarded ad: $e');
+      Logger.error('Error loading rewarded ad', e);
       _rewardedAd = null;
       _isRewardedAdReady = false;
     }
@@ -82,10 +81,10 @@ class AdMobService {
     try {
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (RewardedAd ad) {
-          print('Rewarded ad showed full screen content');
+          Logger.info('Rewarded ad showed full screen content');
         },
         onAdDismissedFullScreenContent: (RewardedAd ad) {
-          print('Rewarded ad dismissed full screen content');
+          Logger.info('Rewarded ad dismissed full screen content');
           ad.dispose();
           _rewardedAd = null;
           _isRewardedAdReady = false;
@@ -94,7 +93,7 @@ class AdMobService {
           loadRewardedAd();
         },
         onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-          print('Rewarded ad failed to show full screen content: $error');
+          Logger.error('Rewarded ad failed to show full screen content', error);
           ad.dispose();
           _rewardedAd = null;
           _isRewardedAdReady = false;
@@ -107,7 +106,7 @@ class AdMobService {
 
       _rewardedAd!.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-          print('User earned reward: ${reward.amount} ${reward.type}');
+          Logger.success('User earned reward: ${reward.amount} ${reward.type}');
           
           // Award coins
           onCoinsEarned(CoinService.adReward);
@@ -119,7 +118,7 @@ class AdMobService {
         },
       );
     } catch (e) {
-      print('Error showing rewarded ad: $e');
+      Logger.error('Error showing rewarded ad', e);
       if (context.mounted) {
         _showAdFailedDialog(context, onCoinsEarned);
       }
@@ -132,7 +131,7 @@ class AdMobService {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white.withOpacity(0.95),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -172,7 +171,7 @@ class AdMobService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white.withOpacity(0.95),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -287,8 +286,8 @@ class AdMobService {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.blue.withOpacity(0.8),
-                          Colors.purple.withOpacity(0.6),
+                          Colors.blue.withValues(alpha: 0.8),
+                          Colors.purple.withValues(alpha: 0.6),
                         ],
                       ),
                     ),
@@ -303,7 +302,7 @@ class AdMobService {
                                 width: 80,
                                 height: 80,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -326,7 +325,7 @@ class AdMobService {
                                 'Watch to earn ${CoinService.adReward} coins!',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
-                                  color: Colors.white.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha: 0.8),
                                 ),
                               ),
                             ],
@@ -339,7 +338,7 @@ class AdMobService {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: Colors.black.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: Text(
@@ -427,7 +426,7 @@ class AdMobService {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white.withOpacity(0.95),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -438,7 +437,7 @@ class AdMobService {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -485,13 +484,15 @@ class AdMobService {
 
     // Simulate short demo ad
     Future.delayed(const Duration(seconds: 5), () {
-      Navigator.of(context).pop(); // Close demo dialog
-      
-      // Award coins
-      onCoinsEarned(CoinService.adReward);
-      
-      // Show success dialog
-      _showSuccessDialog(context);
+      if (context.mounted) {
+        Navigator.of(context).pop(); // Close demo dialog
+        
+        // Award coins
+        onCoinsEarned(CoinService.adReward);
+        
+        // Show success dialog
+        _showSuccessDialog(context);
+      }
     });
   }
 
@@ -500,7 +501,7 @@ class AdMobService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white.withOpacity(0.95),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -511,7 +512,7 @@ class AdMobService {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -542,9 +543,9 @@ class AdMobService {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
+                  color: Colors.amber.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                  border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

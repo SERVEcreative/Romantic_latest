@@ -1,4 +1,4 @@
-package com.example.romantic_login_app
+package com.servecreative.romantic_love
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
 import '../widgets/registration_dialog.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
@@ -287,10 +284,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
         Container(
           width: 80,
           height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
+                  decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.2),
+          shape: BoxShape.circle,
+        ),
           child: const Icon(
             Icons.phone_android,
             size: 40,
@@ -311,7 +308,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
           'We\'ve sent a verification code to',
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
           ),
         ),
         Text(
@@ -344,11 +341,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
               borderRadius: BorderRadius.circular(12),
               fieldHeight: 60,
               fieldWidth: 45,
-              activeFillColor: Colors.white.withOpacity(0.2),
-              inactiveFillColor: Colors.white.withOpacity(0.1),
-              selectedFillColor: Colors.white.withOpacity(0.3),
+              activeFillColor: Colors.white.withValues(alpha: 0.2),
+              inactiveFillColor: Colors.white.withValues(alpha: 0.1),
+              selectedFillColor: Colors.white.withValues(alpha: 0.3),
               activeColor: Colors.white,
-              inactiveColor: Colors.white.withOpacity(0.5),
+              inactiveColor: Colors.white.withValues(alpha: 0.5),
               selectedColor: Colors.white,
             ),
             keyboardType: TextInputType.number,
@@ -373,7 +370,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             'Enter the 6-digit code sent to your phone',
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -383,9 +380,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.3)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
               ),
               child: Column(
                 children: [
@@ -412,7 +409,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                     'Use this code to test the app',
                     style: GoogleFonts.poppins(
                       fontSize: 10,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -465,7 +462,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
           'Didn\'t receive the code?',
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
           ),
         ),
         const SizedBox(height: 8),
@@ -496,7 +493,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             'Resend code in $_resendCountdown seconds',
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
       ],
@@ -510,7 +507,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
           'By continuing, you agree to our',
           style: GoogleFonts.poppins(
             fontSize: 12,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
         Row(
@@ -531,7 +528,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
               ' and ',
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
               ),
             ),
             TextButton(

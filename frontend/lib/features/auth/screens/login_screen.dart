@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
 import 'otp_verification_screen.dart';
 
@@ -189,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen>
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
           child: const Icon(
@@ -216,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen>
           'Let\'s continue our romantic journey',
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
           ),
           textAlign: TextAlign.center,
         ),
@@ -228,10 +225,10 @@ class _LoginScreenState extends State<LoginScreen>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -254,18 +251,18 @@ class _LoginScreenState extends State<LoginScreen>
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 labelStyle: GoogleFonts.poppins(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
@@ -276,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ),
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.1),
+                fillColor: Colors.white.withValues(alpha: 0.1),
               ),
               style: GoogleFonts.poppins(
                 color: Colors.white,
@@ -348,7 +345,7 @@ class _LoginScreenState extends State<LoginScreen>
           'By continuing, you agree to our',
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
           ),
         ),
         Row(
@@ -369,7 +366,7 @@ class _LoginScreenState extends State<LoginScreen>
               ' and ',
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ),
             TextButton(

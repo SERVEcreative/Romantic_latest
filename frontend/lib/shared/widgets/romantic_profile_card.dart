@@ -34,7 +34,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -56,8 +56,8 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     return Container(
       height: 480, // Increased height to accommodate action buttons
       width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
@@ -90,9 +90,9 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.2),
-                    Colors.black.withOpacity(0.6),
-                    Colors.black.withOpacity(0.8),
+                    Colors.black.withValues(alpha: 0.2),
+                    Colors.black.withValues(alpha: 0.6),
+                    Colors.black.withValues(alpha: 0.8),
                   ],
                 ),
               ),
@@ -127,14 +127,14 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
   }
 
   Widget _buildProfileInfoOverlay() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+          return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
         ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -146,7 +146,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -160,7 +160,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                          color: Colors.white,
                          shadows: [
                            Shadow(
-                             color: Colors.black.withOpacity(0.5),
+                             color: Colors.black.withValues(alpha: 0.5),
                              offset: const Offset(0, 1),
                              blurRadius: 3,
                            ),
@@ -171,7 +171,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.pink.withOpacity(0.8),
+                        color: Colors.pink.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
                                              child: Text(
@@ -198,13 +198,13 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 14,
                       color: Colors.white,
@@ -217,7 +217,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                          color: Colors.white,
                          shadows: [
                            Shadow(
-                             color: Colors.black.withOpacity(0.5),
+                             color: Colors.black.withValues(alpha: 0.5),
                              offset: const Offset(0, 1),
                              blurRadius: 2,
                            ),
@@ -239,7 +239,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                                  child: Text(
@@ -250,7 +250,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                      height: 1.3,
                      shadows: [
                        Shadow(
-                         color: Colors.black.withOpacity(0.5),
+                         color: Colors.black.withValues(alpha: 0.5),
                          offset: const Offset(0, 1),
                          blurRadius: 2,
                        ),
@@ -319,8 +319,8 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
           ],
         ),
       ),
@@ -352,11 +352,11 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
              decoration: BoxDecoration(
-         color: widget.profile.online ? Colors.green : Colors.grey.withOpacity(0.7),
+         color: widget.profile.online ? Colors.green : Colors.grey.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -368,7 +368,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
@@ -473,14 +473,14 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     return Container(
       height: 44,
       decoration: BoxDecoration(
-        color: hasEnoughCoins ? color.withOpacity(0.9) : Colors.white.withOpacity(0.1),
+        color: hasEnoughCoins ? color.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: hasEnoughCoins 
-            ? Border.all(color: Colors.white.withOpacity(0.3), width: 1)
-            : Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+            ? Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1)
+            : Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
         boxShadow: hasEnoughCoins ? [
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -496,7 +496,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
             children: [
               Icon(
                 icon,
-                color: hasEnoughCoins ? Colors.white : Colors.white.withOpacity(0.6),
+                color: hasEnoughCoins ? Colors.white : Colors.white.withValues(alpha: 0.6),
                 size: 18,
               ),
               const SizedBox(width: 6),
@@ -509,10 +509,10 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: hasEnoughCoins ? Colors.white : Colors.white.withOpacity(0.6),
+                      color: hasEnoughCoins ? Colors.white : Colors.white.withValues(alpha: 0.6),
                       shadows: hasEnoughCoins ? [
                         Shadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.3),
                           offset: const Offset(0, 1),
                           blurRadius: 2,
                         ),
@@ -523,10 +523,10 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                     '$cost coins',
                     style: GoogleFonts.poppins(
                       fontSize: 9,
-                      color: hasEnoughCoins ? Colors.white.withOpacity(0.9) : Colors.white.withOpacity(0.4),
+                      color: hasEnoughCoins ? Colors.white.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.4),
                       shadows: hasEnoughCoins ? [
                         Shadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           offset: const Offset(0, 1),
                           blurRadius: 1,
                         ),

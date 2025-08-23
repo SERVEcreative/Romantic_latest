@@ -23,8 +23,8 @@ class HomeWidget extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
             Colors.white,
           ],
         ),
@@ -85,14 +85,14 @@ class HomeWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.amber.withOpacity(0.9),
-              Colors.orange.withOpacity(0.8),
+              Colors.amber.withValues(alpha: 0.9),
+              Colors.orange.withValues(alpha: 0.8),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.amber.withOpacity(0.3),
+              color: Colors.amber.withValues(alpha: 0.3),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),

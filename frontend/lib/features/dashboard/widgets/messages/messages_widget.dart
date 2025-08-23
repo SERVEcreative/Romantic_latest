@@ -12,8 +12,8 @@ class MessagesWidget extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.pink.withOpacity(0.1),
-            Colors.purple.withOpacity(0.05),
+            Colors.pink.withValues(alpha: 0.1),
+            Colors.purple.withValues(alpha: 0.05),
             Colors.white,
           ],
         ),
@@ -36,7 +36,7 @@ class MessagesWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.chat_bubble_rounded,
             color: Colors.pink,
             size: 28,
@@ -82,7 +82,7 @@ class MessagesWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -145,8 +145,8 @@ class MessagesWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.pink.withOpacity(0.8),
-            Colors.purple.withOpacity(0.6),
+            Colors.pink.withValues(alpha: 0.8),
+            Colors.purple.withValues(alpha: 0.6),
           ],
         ),
       ),

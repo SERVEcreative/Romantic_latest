@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/utils/validators.dart';
 import '../services/api_service.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
 
@@ -181,7 +179,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -192,7 +190,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -208,10 +206,10 @@ class _RegistrationDialogState extends State<RegistrationDialog>
                         width: 65,
                         height: 65,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             width: 2,
                           ),
                         ),
@@ -238,7 +236,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
                         'Tell us a bit about yourself 💕',
                         style: GoogleFonts.poppins(
                           fontSize: bodyFontSize - 1,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -313,13 +311,13 @@ class _RegistrationDialogState extends State<RegistrationDialog>
       ),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.8), size: 22),
+        prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 22),
         labelStyle: GoogleFonts.poppins(
-          color: Colors.white.withOpacity(0.8),
+          color: Colors.white.withValues(alpha: 0.8),
           fontSize: fontSize - 1,
         ),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.15),
+        fillColor: Colors.white.withValues(alpha: 0.15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -327,7 +325,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -362,9 +360,9 @@ class _RegistrationDialogState extends State<RegistrationDialog>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha: 0.15),
         border: Border.all(
-          color: Colors.white.withOpacity(0.3),
+          color: Colors.white.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -388,7 +386,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
             size: 22,
           ),
           labelStyle: GoogleFonts.poppins(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             fontSize: fontSize - 1,
           ),
           border: InputBorder.none,
@@ -438,7 +436,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),

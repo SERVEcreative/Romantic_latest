@@ -1,4 +1,3 @@
-import '../../../core/constants/app_constants.dart';
 import '../../../shared/models/coin_package.dart';
 
 class CoinService {

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/constants/app_colors.dart';
 import '../../../shared/models/user_profile.dart';
 
 class CallingScreen extends StatefulWidget {
@@ -94,9 +93,9 @@ class _CallingScreenState extends State<CallingScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.purple.withOpacity(0.8),
-              Colors.pink.withOpacity(0.6),
-              Colors.deepPurple.withOpacity(0.9),
+              Colors.purple.withValues(alpha: 0.8),
+              Colors.pink.withValues(alpha: 0.6),
+              Colors.deepPurple.withValues(alpha: 0.9),
             ],
           ),
         ),
@@ -172,7 +171,7 @@ class _CallingScreenState extends State<CallingScreen>
                 height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             );
@@ -193,13 +192,13 @@ class _CallingScreenState extends State<CallingScreen>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.pink.withOpacity(0.8),
-                      Colors.purple.withOpacity(0.6),
+                      Colors.pink.withValues(alpha: 0.8),
+                      Colors.purple.withValues(alpha: 0.6),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.3),
+                      color: Colors.pink.withValues(alpha: 0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -249,15 +248,15 @@ class _CallingScreenState extends State<CallingScreen>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.pink.withOpacity(0.8),
-            Colors.purple.withOpacity(0.6),
+            Colors.pink.withValues(alpha: 0.8),
+            Colors.purple.withValues(alpha: 0.6),
           ],
         ),
       ),
       child: Icon(
         Icons.person,
         size: 60,
-        color: Colors.white.withOpacity(0.8),
+        color: Colors.white.withValues(alpha: 0.8),
       ),
     );
   }
@@ -278,7 +277,7 @@ class _CallingScreenState extends State<CallingScreen>
           widget.isIncoming ? 'Incoming call...' : 'Calling...',
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
           ),
         ),
       ],
@@ -290,10 +289,10 @@ class _CallingScreenState extends State<CallingScreen>
       margin: const EdgeInsets.symmetric(horizontal: 40),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -318,7 +317,7 @@ class _CallingScreenState extends State<CallingScreen>
               widget.caller.bio,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
               textAlign: TextAlign.center,
             ),
@@ -333,7 +332,7 @@ class _CallingScreenState extends State<CallingScreen>
       children: [
         Icon(
           icon,
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: 0.7),
           size: 16,
         ),
         const SizedBox(width: 4),
@@ -341,7 +340,7 @@ class _CallingScreenState extends State<CallingScreen>
           label,
           style: GoogleFonts.poppins(
             fontSize: 12,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
       ],
@@ -421,7 +420,7 @@ class _CallingScreenState extends State<CallingScreen>
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               shape: BoxShape.circle,
               border: Border.all(
                 color: color,
@@ -463,7 +462,7 @@ class _CallingScreenState extends State<CallingScreen>
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withValues(alpha: 0.3),
               blurRadius: 15,
               spreadRadius: 5,
             ),
