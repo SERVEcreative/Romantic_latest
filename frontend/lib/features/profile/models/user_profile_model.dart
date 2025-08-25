@@ -14,6 +14,12 @@ class UserProfileModel {
   final String phoneNumber;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool isVerified;
+  final bool isSuperLover;
+  final String? superLoverStatus; // 'online', 'ready', 'offline'
+  final String? superLoverBio;
+  final double? superLoverRating;
+  final int? superLoverCallCount;
 
   const UserProfileModel({
     required this.id,
@@ -31,6 +37,12 @@ class UserProfileModel {
     required this.phoneNumber,
     required this.createdAt,
     required this.updatedAt,
+    this.isVerified = false,
+    this.isSuperLover = false,
+    this.superLoverStatus,
+    this.superLoverBio,
+    this.superLoverRating,
+    this.superLoverCallCount,
   });
 
   factory UserProfileModel.fromMap(Map<String, dynamic> map) {
@@ -50,6 +62,12 @@ class UserProfileModel {
       phoneNumber: map['phoneNumber'] ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now(),
+      isVerified: map['isVerified'] ?? false,
+      isSuperLover: map['isSuperLover'] ?? false,
+      superLoverStatus: map['superLoverStatus'],
+      superLoverBio: map['superLoverBio'],
+      superLoverRating: map['superLoverRating']?.toDouble(),
+      superLoverCallCount: map['superLoverCallCount'],
     );
   }
 
@@ -70,6 +88,12 @@ class UserProfileModel {
       'phoneNumber': phoneNumber,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'isVerified': isVerified,
+      'isSuperLover': isSuperLover,
+      'superLoverStatus': superLoverStatus,
+      'superLoverBio': superLoverBio,
+      'superLoverRating': superLoverRating,
+      'superLoverCallCount': superLoverCallCount,
     };
   }
 
@@ -89,6 +113,12 @@ class UserProfileModel {
     String? phoneNumber,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? isVerified,
+    bool? isSuperLover,
+    String? superLoverStatus,
+    String? superLoverBio,
+    double? superLoverRating,
+    int? superLoverCallCount,
   }) {
     return UserProfileModel(
       id: id ?? this.id,
@@ -106,6 +136,12 @@ class UserProfileModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isVerified: isVerified ?? this.isVerified,
+      isSuperLover: isSuperLover ?? this.isSuperLover,
+      superLoverStatus: superLoverStatus ?? this.superLoverStatus,
+      superLoverBio: superLoverBio ?? this.superLoverBio,
+      superLoverRating: superLoverRating ?? this.superLoverRating,
+      superLoverCallCount: superLoverCallCount ?? this.superLoverCallCount,
     );
   }
 

@@ -115,11 +115,17 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
             child: _buildActionButtons(),
           ),
           
-          // Online indicator
+          // Online indicator and Super Lover badge
           Positioned(
             top: 16,
             right: 16,
-            child: _buildOnlineIndicator(),
+            child: Column(
+              children: [
+                if (widget.profile.isSuperLover) _buildSuperLoverBadge(),
+                const SizedBox(height: 8),
+                _buildOnlineIndicator(),
+              ],
+            ),
           ),
         ],
       ),
@@ -242,23 +248,58 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                   color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                                 child: Text(
-                   widget.profile.bio,
-                   style: GoogleFonts.poppins(
-                     fontSize: 13,
-                     color: Colors.white,
-                     height: 1.3,
-                     shadows: [
-                       Shadow(
-                         color: Colors.black.withValues(alpha: 0.5),
-                         offset: const Offset(0, 1),
-                         blurRadius: 2,
-                       ),
-                     ],
-                   ),
-                   maxLines: 2,
-                   overflow: TextOverflow.ellipsis,
-                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.profile.isSuperLover && widget.profile.superLoverBio != null 
+                          ? widget.profile.superLoverBio! 
+                          : widget.profile.bio,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.white,
+                        height: 1.3,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            offset: const Offset(0, 1),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (widget.profile.isSuperLover && widget.profile.superLoverRating != null) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            size: 14,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${widget.profile.superLoverRating!.toStringAsFixed(1)} (${widget.profile.superLoverCallCount ?? 0} calls)',
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.amber,
+                              fontWeight: FontWeight.w600,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.5),
+                                  offset: const Offset(0, 1),
+                                  blurRadius: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -348,11 +389,49 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     );
   }
 
+  Widget _buildSuperLoverBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.amber, Colors.orange],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.star,
+            size: 12,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Super Lover',
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildOnlineIndicator() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-             decoration: BoxDecoration(
-         color: widget.profile.online ? Colors.green : Colors.grey.withValues(alpha: 0.7),
+      decoration: BoxDecoration(
+        color: widget.profile.online ? Colors.green : Colors.grey.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -374,14 +453,14 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
             ),
           ),
           const SizedBox(width: 4),
-                     Text(
-             widget.profile.online ? 'Online' : 'Offline',
-             style: GoogleFonts.poppins(
-               fontSize: 10,
-               fontWeight: FontWeight.w500,
-               color: Colors.white,
-             ),
-           ),
+          Text(
+            widget.profile.online ? 'Online' : 'Offline',
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
     );
@@ -397,7 +476,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               'Call',
               Icons.call,
               Colors.green,
-              CoinService.callCost,
+              widget.profile.isSuperLover ? 50 : CoinService.callCost, // Super Lovers cost 50 coins
               () => _handleCallAction(),
             ),
           ),
@@ -407,7 +486,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               'Chat',
               Icons.chat_bubble,
               Colors.blue,
-              CoinService.chatCost,
+              widget.profile.isSuperLover ? 25 : CoinService.chatCost, // Super Lovers cost 25 coins for chat
               () => _handleChatAction(),
             ),
           ),

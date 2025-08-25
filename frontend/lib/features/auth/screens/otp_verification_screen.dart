@@ -30,7 +30,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
   bool _isResendLoading = false;
   int _resendCountdown = 30;
   bool _canResend = false;
-  String _mockOtpCode = ''; // Store mock OTP for testing
 
   @override
   void initState() {
@@ -66,6 +65,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     _animationController.forward();
   }
 
+
+
   void _startResendCountdown() {
     if (!mounted) return;
     
@@ -91,11 +92,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     try {
       final result = await ApiService.sendOTP(widget.phoneNumber);
       if (result['success']) {
-        // Store mock OTP for testing
-        if (result['data']?['otpCode'] != null) {
-          setState(() {
-            _mockOtpCode = result['data']['otpCode'];
-          });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message'] ?? 'OTP sent successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
         }
       } else {
         if (mounted) {
@@ -160,8 +163,21 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
               // Show registration dialog
               _showRegistrationDialog();
             } else {
-              // User exists, login successful
-              _navigateToDashboard();
+              // User exists, show success message then navigate
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Login successful! Welcome back!'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              
+              // Wait a moment then navigate
+              Future.delayed(Duration(seconds: 2), () {
+                if (mounted) {
+                  _navigateToDashboard();
+                }
+              });
             }
           } else {
             // Show error message
@@ -237,42 +253,47 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             ],
           ),
         ),
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height - 
-                              MediaQuery.of(context).padding.top - 
-                              MediaQuery.of(context).padding.bottom,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildHeader(),
-                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 25),
-                        _buildOTPForm(),
-                        SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 20),
-                        _buildVerifyButton(),
-                        const SizedBox(height: 15),
-                        _buildResendSection(),
-                        const SizedBox(height: 10),
-                        // Footer (hide when keyboard is open)
-                        if (MediaQuery.of(context).viewInsets.bottom == 0)
-                          _buildFooter(),
-                      ],
+        child: Stack(
+          children: [
+            // Main content
+            SafeArea(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height - 
+                                  MediaQuery.of(context).padding.top - 
+                                  MediaQuery.of(context).padding.bottom,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildHeader(),
+                            SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 25),
+                            _buildOTPForm(),
+                            SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 20),
+                            _buildVerifyButton(),
+                            const SizedBox(height: 15),
+                            _buildResendSection(),
+                            const SizedBox(height: 10),
+                            // Footer (hide when keyboard is open)
+                            if (MediaQuery.of(context).viewInsets.bottom == 0)
+                              _buildFooter(),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -332,7 +353,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             appContext: context,
             length: 6,
             controller: _otpController,
-            onChanged: (value) {},
+            onChanged: (value) {
+              // Remove automatic hiding - only hide on gesture
+            },
             onCompleted: (value) {
               _verifyOTP();
             },
@@ -374,48 +397,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
             ),
             textAlign: TextAlign.center,
           ),
-          // Mock OTP display for testing
-          if (_mockOtpCode.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '🧪 MOCK OTP FOR TESTING',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _mockOtpCode,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Use this code to test the app',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          
         ],
       ),
     );
@@ -499,6 +481,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
       ],
     );
   }
+
+
 
   Widget _buildFooter() {
     return Column(

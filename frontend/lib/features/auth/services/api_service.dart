@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/models/auth_models.dart';
 
 class ApiService {
   // Mock data for offline development
-  static const bool _useMockData = true; // Set to false when backend is ready
+  static const bool _useMockData = false; // Set to false to use real API
   
-  static const String baseUrl = 'http://10.0.2.2:3000/api'; // For Android emulator
-  // static const String baseUrl = 'http://localhost:3000/api'; // For iOS simulator
-  // static const String baseUrl = 'http://your-server-ip:3000/api'; // For real device
+  static const String baseUrl = 'http://192.168.1.4:5000/api'; // Using actual IP address
+  // static const String baseUrl = 'http://10.0.2.2:5000/api'; // For Android emulator
+  // static const String baseUrl = 'http://your-server-ip:5000/api'; // For real device
 
   // Headers
   static Map<String, String> get _headers => {
@@ -20,116 +22,49 @@ class ApiService {
     'Authorization': 'Bearer $token',
   };
 
-  // Send OTP - Mock Implementation
+  // Send OTP - Real API Implementation
   static Future<Map<String, dynamic>> sendOTP(String phoneNumber) async {
-    if (_useMockData) {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 2));
-      
-      // Generate mock OTP
-      final mockOtp = (100000 + DateTime.now().millisecondsSinceEpoch % 900000).toString();
-      
-      return {
-        'success': true,
-        'data': {
-          'phoneNumber': phoneNumber,
-          'otpCode': mockOtp,
-          'expiresAt': DateTime.now().add(const Duration(minutes: 10)).toIso8601String(),
-          'testMode': true,
-        },
-        'message': 'OTP sent successfully (MOCK MODE)',
-      };
-    }
-
-    // Real API call (when backend is ready)
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/send-otp'),
-        headers: _headers,
-        body: jsonEncode({
-          'phoneNumber': phoneNumber,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-      
-      if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'data': data['data'],
-          'message': data['message'],
-        };
-      } else {
-        return {
-          'success': false,
-          'message': data['message'] ?? 'Failed to send OTP',
-        };
-      }
+      final response = await AuthService.sendOtp(phoneNumber);
+      return {
+        'success': response.success,
+        'data': {
+          'phoneNumber': response.phoneNumber,
+          'otpId': response.otpId,
+          'expiresIn': response.expiresIn,
+        },
+        'message': response.message,
+      };
     } catch (e) {
       return {
         'success': false,
-        'message': 'Network error: $e',
+        'message': 'Failed to send OTP: $e',
       };
     }
   }
 
-  // Verify OTP - Mock Implementation
+  // Verify OTP - Real API Implementation
   static Future<Map<String, dynamic>> verifyOTP(String phoneNumber, String otpCode) async {
-    if (_useMockData) {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Mock verification - accept any 6-digit OTP
-      if (otpCode.length == 6 && int.tryParse(otpCode) != null) {
-        final mockToken = 'mock_token_${DateTime.now().millisecondsSinceEpoch}';
-        await _saveToken(mockToken);
-        
-        return {
-          'success': true,
-          'data': {
-            'phoneNumber': phoneNumber,
-            'isNewUser': true, // Always treat as new user in mock mode
-            'accessToken': mockToken,
-          },
-          'message': 'OTP verified successfully (MOCK MODE)',
-        };
-      } else {
-        return {
-          'success': false,
-          'message': 'Invalid OTP code',
-        };
-      }
-    }
-
-    // Real API call (when backend is ready)
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/verify-otp'),
-        headers: _headers,
-        body: jsonEncode({
-          'phoneNumber': phoneNumber,
-          'otpCode': otpCode,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
+      final response = await AuthService.verifyOtp(phoneNumber, otpCode);
       
-      if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'data': data['data'],
-          'message': data['message'],
-        };
-      } else {
-        return {
-          'success': false,
-          'message': data['message'] ?? 'Invalid OTP',
-        };
+      if (response.success && response.accessToken != null) {
+        await _saveToken(response.accessToken!);
       }
+      
+      return {
+        'success': response.success,
+        'data': {
+          'phoneNumber': phoneNumber,
+          'accessToken': response.accessToken,
+          'user': response.user?.toJson(),
+        },
+        'message': response.message,
+      };
     } catch (e) {
       return {
         'success': false,
-        'message': 'Network error: $e',
+        'message': 'Failed to verify OTP: $e',
       };
     }
   }

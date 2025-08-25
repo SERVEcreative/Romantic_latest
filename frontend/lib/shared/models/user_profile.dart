@@ -10,6 +10,12 @@ class UserProfile {
   final String? photoUrl;
   final bool online;
   final String lastSeen;
+  final bool isVerified;
+  final bool isSuperLover;
+  final String? superLoverStatus; // 'online', 'ready', 'offline'
+  final String? superLoverBio;
+  final double? superLoverRating;
+  final int? superLoverCallCount;
 
   UserProfile({
     required this.id,
@@ -23,6 +29,12 @@ class UserProfile {
     this.photoUrl,
     required this.online,
     required this.lastSeen,
+    this.isVerified = false,
+    this.isSuperLover = false,
+    this.superLoverStatus,
+    this.superLoverBio,
+    this.superLoverRating,
+    this.superLoverCallCount,
   });
 
   factory UserProfile.fromMap(Map<String, dynamic> map) {
@@ -38,6 +50,12 @@ class UserProfile {
       photoUrl: map['photoUrl'],
       online: map['online'] ?? false,
       lastSeen: map['lastSeen'] ?? '',
+      isVerified: map['isVerified'] ?? false,
+      isSuperLover: map['isSuperLover'] ?? false,
+      superLoverStatus: map['superLoverStatus'],
+      superLoverBio: map['superLoverBio'],
+      superLoverRating: map['superLoverRating']?.toDouble(),
+      superLoverCallCount: map['superLoverCallCount'],
     );
   }
 
@@ -54,6 +72,12 @@ class UserProfile {
       'photoUrl': photoUrl,
       'online': online,
       'lastSeen': lastSeen,
+      'isVerified': isVerified,
+      'isSuperLover': isSuperLover,
+      'superLoverStatus': superLoverStatus,
+      'superLoverBio': superLoverBio,
+      'superLoverRating': superLoverRating,
+      'superLoverCallCount': superLoverCallCount,
     };
   }
 }

@@ -8,6 +8,7 @@ class ProfileMenuWidget extends StatelessWidget {
   final VoidCallback onEditProfileTap;
   final VoidCallback onSettingsTap;
   final VoidCallback onHelpSupportTap;
+  final VoidCallback onSuperLoverTap;
 
   const ProfileMenuWidget({
     super.key,
@@ -17,6 +18,7 @@ class ProfileMenuWidget extends StatelessWidget {
     required this.onEditProfileTap,
     required this.onSettingsTap,
     required this.onHelpSupportTap,
+    required this.onSuperLoverTap,
   });
 
   @override
@@ -34,6 +36,12 @@ class ProfileMenuWidget extends StatelessWidget {
           title: 'My Coins',
           subtitle: '$availableCoins coins available',
           onTap: onCoinOptionsTap,
+        ),
+        ProfileMenuItemWidget(
+          icon: Icons.star,
+          title: 'Super Lover',
+          subtitle: 'Become a Super Lover & earn coins',
+          onTap: onSuperLoverTap,
         ),
         ProfileMenuItemWidget(
           icon: Icons.settings,

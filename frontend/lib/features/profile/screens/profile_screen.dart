@@ -5,6 +5,7 @@ import '../widgets/profile_header_widget.dart';
 import '../widgets/profile_card_widget.dart';
 import '../widgets/profile_menu_widget.dart';
 import 'edit_profile_screen.dart';
+import 'super_lover_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final int availableCoins;
@@ -104,6 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onEditProfileTap: _navigateToEditProfile,
                         onSettingsTap: _navigateToSettings,
                         onHelpSupportTap: _navigateToHelpSupport,
+                        onSuperLoverTap: _navigateToSuperLover,
                       ),
                       const SizedBox(height: 20),
                     ],
@@ -146,5 +148,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.blue,
       ),
     );
+  }
+
+  void _navigateToSuperLover() {
+    if (_userProfile != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SuperLoverScreen(
+            userProfile: _userProfile!,
+            availableCoins: widget.availableCoins,
+          ),
+        ),
+      ).then((result) {
+        if (result == true) {
+          // Refresh the profile data if super lover status changed
+          _loadUserProfile();
+        }
+      });
+    }
   }
 }

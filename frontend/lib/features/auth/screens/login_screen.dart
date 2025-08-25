@@ -95,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen>
               SnackBar(
                 content: Text(result['message'] ?? 'Failed to send OTP'),
                 backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
               ),
             );
           }
@@ -109,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen>
             SnackBar(
               content: Text('Error: $e'),
               backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
             ),
           );
         }
@@ -158,6 +160,8 @@ class _LoginScreenState extends State<LoginScreen>
                         // Login Form
                         _buildLoginForm(),
                         SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 15 : 25),
+                        
+
                         
                         // Login Button
                         _buildLoginButton(),
@@ -337,6 +341,8 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
   }
+
+
 
   Widget _buildFooter() {
     return Column(

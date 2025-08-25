@@ -4,10 +4,15 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/constants/app_constants.dart';
 import 'core/constants/app_colors.dart';
 import 'core/utils/logger.dart';
+import 'core/config/app_config.dart';
 import 'features/auth/screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize app configuration
+  AppConfig.setEnvironment(Environment.development);
+  AppConfig.printConfig();
   
   // Initialize AdMob with error handling
   try {

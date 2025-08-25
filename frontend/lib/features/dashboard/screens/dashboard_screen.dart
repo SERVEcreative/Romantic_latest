@@ -73,6 +73,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DashboardService.showLogoutDialog(context);
   }
 
+
+
   Widget _getCurrentScreen() {
     switch (_selectedIndex) {
       case 0:

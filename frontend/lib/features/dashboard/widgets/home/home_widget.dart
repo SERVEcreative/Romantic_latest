@@ -121,6 +121,8 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
+
+
   Widget _buildProfilesList() {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
