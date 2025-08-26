@@ -19,7 +19,7 @@ class SuperLoverScreen extends StatefulWidget {
 
 class _SuperLoverScreenState extends State<SuperLoverScreen> {
   final SuperLoverService _superLoverService = SuperLoverService();
-  final ProfileService _profileService = ProfileService();
+  // final ProfileService _profileService = ProfileService(); // Unused for now
   final TextEditingController _bioController = TextEditingController();
   
   bool _isLoading = false;

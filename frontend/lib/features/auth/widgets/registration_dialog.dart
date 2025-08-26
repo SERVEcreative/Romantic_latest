@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/api_service.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/token_service.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
 
 class RegistrationDialog extends StatefulWidget {
   final String phoneNumber;
+  final String? token; // Token from OTP verification
   
   const RegistrationDialog({
     super.key,
     required this.phoneNumber,
+    this.token, // Token from OTP verification
   });
 
   @override
@@ -20,9 +23,12 @@ class _RegistrationDialogState extends State<RegistrationDialog>
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
+  final _bioController = TextEditingController();
+  final _locationController = TextEditingController();
   
   String _selectedGender = 'male';
   bool _isLoading = false;
+  bool _hasValidToken = true; // Track if user has valid token
   
   // Single animation controller for better performance
   late AnimationController _animationController;
@@ -33,6 +39,52 @@ class _RegistrationDialogState extends State<RegistrationDialog>
   void initState() {
     super.initState();
     _initializeAnimations();
+    _checkTokenAvailability();
+  }
+
+  /// Check if user has a valid token for profile creation
+  Future<void> _checkTokenAvailability() async {
+    try {
+      String? token = await TokenService.getToken();
+      if (token == null || token.isEmpty) {
+        token = widget.token; // Fallback to passed token
+      }
+      
+      if (mounted) {
+        setState(() {
+          _hasValidToken = token != null && token.isNotEmpty;
+        });
+      }
+      
+      if (!_hasValidToken) {
+        print('Warning: No valid token found for profile creation');
+      }
+    } catch (e) {
+      print('Error checking token availability: $e');
+      if (mounted) {
+        setState(() {
+          _hasValidToken = false;
+        });
+      }
+    }
+  }
+
+  /// Navigate back to login screen when token is missing
+  void _goBackToLogin() {
+    // Clear any stored tokens
+    TokenService.clearAllTokens();
+    
+    // Close dialog and navigate back to login
+    Navigator.of(context).pop();
+    
+    // Show message to user
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please login again to continue'),
+        backgroundColor: Colors.orange,
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   void _initializeAnimations() {
@@ -64,6 +116,8 @@ class _RegistrationDialogState extends State<RegistrationDialog>
   void dispose() {
     _nameController.dispose();
     _ageController.dispose();
+    _bioController.dispose();
+    _locationController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -75,20 +129,66 @@ class _RegistrationDialogState extends State<RegistrationDialog>
       });
 
       try {
-        final result = await ApiService.registerUser(
-          phoneNumber: widget.phoneNumber,
-          fullName: _nameController.text.trim(),
-          age: int.parse(_ageController.text),
+        // Get token from SharedPreferences (primary method)
+        String? token = await TokenService.getToken();
+        
+        // Fallback to passed token if SharedPreferences is empty
+        if (token == null || token.isEmpty) {
+          token = widget.token;
+        }
+        
+        // Debug logging
+        print('Creating profile with token: $token');
+        print('Token source: ${token == widget.token ? 'Passed parameter' : 'SharedPreferences'}');
+        print('Profile data: name=${_nameController.text.trim()}, gender=$_selectedGender');
+        
+        // Validate token
+        if (token == null || token.isEmpty) {
+          throw Exception('No authentication token found. Please login again.');
+        }
+        
+        // Use the new AuthService.createProfile method with authentication headers
+        // Get age from the age field
+        final age = int.tryParse(_ageController.text);
+        if (age == null || age < 18 || age > 100) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please enter a valid age (18-100)'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        final result = await AuthService.createProfile(
+          token: token, // Use the retrieved token
+          name: _nameController.text.trim(),
+          age: age, // Pass age directly
           gender: _selectedGender,
-          bio: '',
         );
+        
+        // Debug logging
+        print('Profile creation result: ${result.success} - ${result.message}');
 
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
 
-          if (result['success']) {
+          if (result.success) {
+            // Ensure token is saved to SharedPreferences
+            await TokenService.saveToken(token);
+            
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result.message),
+                backgroundColor: Colors.green,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+            
+            // Close dialog and navigate to dashboard
             Navigator.of(context).pop();
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
@@ -97,13 +197,13 @@ class _RegistrationDialogState extends State<RegistrationDialog>
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   return FadeTransition(opacity: animation, child: child);
                 },
-                transitionDuration: const Duration(milliseconds: 300), // Faster transition
+                transitionDuration: const Duration(milliseconds: 300),
               ),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(result['message'] ?? 'Registration failed'),
+                content: Text(result.message),
                 backgroundColor: Colors.red,
               ),
             );
@@ -240,6 +340,66 @@ class _RegistrationDialogState extends State<RegistrationDialog>
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      
+                      // Token validation indicator
+                      if (!_hasValidToken) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.5),
+                              width: 1,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber_rounded,
+                                    color: Colors.red,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      'Authentication required. Please login again.',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: bodyFontSize - 2,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: _goBackToLogin,
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  backgroundColor: Colors.red.withValues(alpha: 0.1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Go to Login',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: bodyFontSize - 2,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 20),
 
                       // Name Field
@@ -279,6 +439,26 @@ class _RegistrationDialogState extends State<RegistrationDialog>
 
                       // Gender Selection
                       _buildOptimizedGenderSelector(fontSize: bodyFontSize),
+                      const SizedBox(height: 12),
+
+                      // Bio Field
+                      _buildOptimizedTextField(
+                        controller: _bioController,
+                        label: 'Bio (Optional)',
+                        icon: Icons.description_outlined,
+                        fontSize: bodyFontSize,
+                        validator: (value) => null, // Optional field
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Location Field
+                      _buildOptimizedTextField(
+                        controller: _locationController,
+                        label: 'Location (Optional)',
+                        icon: Icons.location_on_outlined,
+                        fontSize: bodyFontSize,
+                        validator: (value) => null, // Optional field
+                      ),
                       const SizedBox(height: 20),
 
                       // Register Button
@@ -367,7 +547,7 @@ class _RegistrationDialogState extends State<RegistrationDialog>
         ),
       ),
       child: DropdownButtonFormField<String>(
-        value: _selectedGender,
+        initialValue: _selectedGender,
         style: GoogleFonts.poppins(
           color: Colors.white,
           fontSize: fontSize,
@@ -442,8 +622,8 @@ class _RegistrationDialogState extends State<RegistrationDialog>
           ),
         ],
       ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _registerUser,
+              child: ElevatedButton(
+          onPressed: (_isLoading || !_hasValidToken) ? null : _registerUser,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -477,18 +657,18 @@ class _RegistrationDialogState extends State<RegistrationDialog>
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.rocket_launch,
-                    color: Color(0xFFFF6B9D),
+                  Icon(
+                    _hasValidToken ? Icons.rocket_launch : Icons.lock_outline,
+                    color: _hasValidToken ? const Color(0xFFFF6B9D) : Colors.grey,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Complete Registration',
+                    _hasValidToken ? 'Complete Registration' : 'Authentication Required',
                     style: GoogleFonts.poppins(
                       fontSize: fontSize,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFFFF6B9D),
+                      color: _hasValidToken ? const Color(0xFFFF6B9D) : Colors.grey,
                     ),
                   ),
                 ],

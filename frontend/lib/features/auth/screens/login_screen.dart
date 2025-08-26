@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/api_service.dart';
+import '../../../core/services/auth_service.dart';
 import 'otp_verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -64,14 +64,14 @@ class _LoginScreenState extends State<LoginScreen>
 
       try {
         // Send OTP via API
-        final result = await ApiService.sendOTP(_completePhoneNumber);
+        final result = await AuthService.sendOtp(_completePhoneNumber);
         
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
           
-          if (result['success']) {
+          if (result.success) {
             // Navigate to OTP verification screen
             Navigator.of(context).push(
               PageRouteBuilder(
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen>
             // Show error message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(result['message'] ?? 'Failed to send OTP'),
+                content: Text(result.message),
                 backgroundColor: Colors.red,
                 duration: const Duration(seconds: 3),
               ),

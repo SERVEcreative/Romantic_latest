@@ -1,5 +1,3 @@
-import '../../shared/models/user_profile.dart';
-
 class SuperLoverData {
   final bool isSuperLover;
   final String? status; // 'online', 'ready', 'offline'

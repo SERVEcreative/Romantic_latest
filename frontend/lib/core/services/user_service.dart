@@ -1,5 +1,6 @@
 import 'api_service.dart';
 import '../models/user_models.dart';
+import '../../shared/models/user_profile.dart';
 
 class UserService {
   // API Endpoints
@@ -18,7 +19,7 @@ class UserService {
   static Future<UserProfile> getProfile() async {
     try {
       final response = await ApiService.get(_profileEndpoint);
-      return UserProfile.fromJson(response);
+      return UserProfile.fromMap(response);
     } catch (e) {
       rethrow;
     }
@@ -31,7 +32,7 @@ class UserService {
         _updateProfileEndpoint,
         body: profileData,
       );
-      return UserProfile.fromJson(response);
+      return UserProfile.fromMap(response);
     } catch (e) {
       rethrow;
     }
@@ -110,7 +111,7 @@ class UserService {
       );
       
       final List<dynamic> usersData = response['users'] ?? [];
-      return usersData.map((user) => UserProfile.fromJson(user)).toList();
+      return usersData.map((user) => UserProfile.fromMap(user)).toList();
     } catch (e) {
       rethrow;
     }
@@ -149,7 +150,7 @@ class UserService {
     try {
       final response = await ApiService.get(_blockedUsersEndpoint);
       final List<dynamic> usersData = response['blockedUsers'] ?? [];
-      return usersData.map((user) => UserProfile.fromJson(user)).toList();
+      return usersData.map((user) => UserProfile.fromMap(user)).toList();
     } catch (e) {
       rethrow;
     }

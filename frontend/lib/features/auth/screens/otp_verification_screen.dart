@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import '../services/api_service.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/token_service.dart';
 import '../widgets/registration_dialog.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
 
@@ -36,8 +37,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     super.initState();
     _initializeAnimations();
     _startResendCountdown();
-    // TODO: Send OTP to phone number
-    _sendOTP();
+    // OTP is already sent from login screen, no need to send again
   }
 
   void _initializeAnimations() {
@@ -90,12 +90,12 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
 
   Future<void> _sendOTP() async {
     try {
-      final result = await ApiService.sendOTP(widget.phoneNumber);
-      if (result['success']) {
+      final result = await AuthService.sendOtp(widget.phoneNumber);
+      if (result.success) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result['message'] ?? 'OTP sent successfully'),
+              content: Text(result.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -104,7 +104,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result['message'] ?? 'Failed to send OTP'),
+              content: Text(result.message),
               backgroundColor: Colors.red,
             ),
           );
@@ -149,41 +149,61 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
 
       try {
         // Verify OTP via API
-        final result = await ApiService.verifyOTP(widget.phoneNumber, _otpController.text);
+        final result = await AuthService.verifyOtp(widget.phoneNumber, _otpController.text);
+        
+        // Debug logging
+        print('OTP Verification Response: ${result.toJson()}');
         
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
           
-          if (result['success']) {
-            final data = result['data'];
+          if (result.success) {
+            final token = result.token;
+            final user = result.user;
+            final profileCompletion = user?.profileCompletion ?? 0;
             
-            if (data['isNewUser'] == true) {
-              // Show registration dialog
-              _showRegistrationDialog();
-            } else {
-              // User exists, show success message then navigate
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Login successful! Welcome back!'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 2),
-                ),
+            if (token != null) {
+              // Save token for future use
+              await TokenService.saveAuthData(
+                token: token,
+                userId: user?.id,
               );
               
-              // Wait a moment then navigate
-              Future.delayed(Duration(seconds: 2), () {
-                if (mounted) {
-                  _navigateToDashboard();
-                }
-              });
+              if (profileCompletion < 60) { // 60% is the minimum profile completion for login
+                // Profile incomplete - show registration dialog
+                _showRegistrationDialog(token);
+              } else {
+                // Profile complete - navigate to dashboard
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Login successful! Welcome back!'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                
+                // Wait a moment then navigate
+                Future.delayed(Duration(seconds: 2), () {
+                  if (mounted) {
+                    _navigateToDashboard();
+                  }
+                });
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error: No token received'),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
           } else {
             // Show error message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(result['message'] ?? 'Invalid OTP'),
+                content: Text(result.message),
                 backgroundColor: Colors.red,
               ),
             );
@@ -206,11 +226,14 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     }
   }
 
-  void _showRegistrationDialog() {
+  void _showRegistrationDialog(String token) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => RegistrationDialog(phoneNumber: widget.phoneNumber),
+      builder: (context) => RegistrationDialog(
+        phoneNumber: widget.phoneNumber,
+        token: token,
+      ),
     );
   }
 

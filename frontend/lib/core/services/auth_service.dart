@@ -1,15 +1,49 @@
 import 'api_service.dart';
 import '../models/auth_models.dart';
+import 'token_service.dart';
 
 class AuthService {
   // API Endpoints
   static const String _sendOtpEndpoint = '/auth/send-otp';
   static const String _verifyOtpEndpoint = '/auth/verify-otp';
-  static const String _loginEndpoint = '/auth/login';
+  static const String _createProfileEndpoint = '/auth/create-profile';
+  
+  // static const String _loginEndpoint = '/auth/login'; // Unused for now
   static const String _logoutEndpoint = '/auth/logout';
   static const String _refreshTokenEndpoint = '/auth/refresh-token';
   static const String _forgotPasswordEndpoint = '/auth/forgot-password';
   static const String _resetPasswordEndpoint = '/auth/reset-password';
+
+  /// Get stored token for authenticated requests
+  static Future<String?> getStoredToken() async {
+    return await TokenService.getToken();
+  }
+
+  /// Check if user is logged in
+  static Future<bool> isLoggedIn() async {
+    return await TokenService.isLoggedIn();
+  }
+
+  /// Logout user and clear stored tokens
+  static Future<void> logout() async {
+    try {
+      // Call logout API if needed
+      final token = await getStoredToken();
+      if (token != null) {
+        await ApiService.post(
+          _logoutEndpoint,
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+      }
+    } catch (e) {
+      // Continue with logout even if API call fails
+    } finally {
+      // Always clear stored tokens
+      await TokenService.clearAllTokens();
+    }
+  }
 
   /// Send OTP to phone number
   static Future<OtpResponse> sendOtp(String phoneNumber) async {
@@ -44,27 +78,29 @@ class AuthService {
     }
   }
 
-  /// Login with credentials
-  static Future<AuthResponse> login(String phoneNumber, String password) async {
+  /// Create user profile after successful OTP verification
+  static Future<ProfileResponse> createProfile({
+    required String token,
+    required String name,
+    required int age,
+    required String gender,
+  }) async {
     try {
+
       final response = await ApiService.post(
-        _loginEndpoint,
+        _createProfileEndpoint,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
         body: {
-          'phoneNumber': phoneNumber,
-          'password': password,
+          'name': name, // Backend expects 'name'
+          'age': age, // Backend expects 'age'
+          'gender': gender, // Backend expects 'gender'
+          // Removed bio and location as they're not in your backend spec
         },
       );
 
-      return AuthResponse.fromJson(response);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Logout user
-  static Future<void> logout() async {
-    try {
-      await ApiService.post(_logoutEndpoint);
+      return ProfileResponse.fromJson(response);
     } catch (e) {
       rethrow;
     }

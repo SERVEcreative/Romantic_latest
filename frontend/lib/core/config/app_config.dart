@@ -9,7 +9,7 @@ class AppConfig {
   
   // API Configuration
   static const Map<Environment, String> _baseUrls = {
-    Environment.development: 'http://192.168.1.4:5000/api', // Using actual IP address
+    Environment.development: 'http://localhost:5000/api', // Using localhost for same machine
     Environment.staging: 'https://staging-api.yourapp.com/api',
     Environment.production: 'https://api.yourapp.com/api',
   };

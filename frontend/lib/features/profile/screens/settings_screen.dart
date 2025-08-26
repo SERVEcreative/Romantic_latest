@@ -297,7 +297,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildDropdownField(String label, String value, List<String> options, 
       Function(String?) onChanged, IconData icon) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: Colors.pink),
@@ -363,7 +363,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.pink,
+            activeThumbColor: Colors.pink,
           ),
         ],
       ),
