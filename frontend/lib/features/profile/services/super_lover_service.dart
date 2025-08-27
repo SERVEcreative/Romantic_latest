@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../shared/models/user_profile.dart';
+import '../models/user_profile_model.dart';
 
 class SuperLoverService {
   static const String baseUrl = 'https://api.romanticlove.com'; // Replace with your actual API URL
@@ -114,7 +114,7 @@ class SuperLoverService {
   }
 
   // Get available super lovers for calling
-  Future<List<UserProfile>> getAvailableSuperLovers() async {
+  Future<List<UserProfileModel>> getAvailableSuperLovers() async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/super-lover/available'),
@@ -125,7 +125,7 @@ class SuperLoverService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => UserProfile.fromMap(json)).toList();
+        return data.map((json) => UserProfileModel.fromMap(json)).toList();
       } else {
         throw Exception('Failed to get available super lovers: ${response.body}');
       }

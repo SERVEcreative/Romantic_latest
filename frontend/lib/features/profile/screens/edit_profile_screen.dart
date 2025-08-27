@@ -101,7 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context, updatedProfile);
+        Navigator.pop(context, true);
       }
     } catch (e) {
       setState(() {

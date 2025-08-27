@@ -26,13 +26,13 @@ class ProfileCardWidget extends StatelessWidget {
         ],
       ),
       child: Column(
-        children: [
-          _buildProfileAvatar(),
-          const SizedBox(height: 16),
-          _buildProfileInfo(),
-          const SizedBox(height: 16),
-          _buildProfileStats(),
-        ],
+                  children: [
+            _buildProfileAvatar(),
+            const SizedBox(height: 16),
+            _buildProfileInfo(),
+            const SizedBox(height: 16),
+            _buildProfileStats(),
+          ],
       ),
     );
   }

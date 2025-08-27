@@ -47,14 +47,15 @@ class _SuperLoverScreenState extends State<SuperLoverScreen> {
       );
       final requirements = await _superLoverService.getSuperLoverRequirements();
 
-      if (widget.userProfile.isSuperLover) {
-        final stats = await _superLoverService.getSuperLoverStats(
-          userId: widget.userProfile.id,
-        );
-        setState(() {
-          _stats = stats;
-        });
-      }
+      // TODO: Add super lover status check when backend supports it
+      // if (widget.userProfile.isSuperLover) {
+      //   final stats = await _superLoverService.getSuperLoverStats(
+      //     userId: widget.userProfile.id,
+      //   );
+      //   setState(() {
+      //     _stats = stats;
+      //   });
+      // }
 
       setState(() {
         _canBecomeSuperLover = canBecome;

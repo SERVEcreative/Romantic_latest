@@ -6,6 +6,7 @@ import '../widgets/profile_card_widget.dart';
 import '../widgets/profile_menu_widget.dart';
 import 'edit_profile_screen.dart';
 import 'super_lover_screen.dart';
+import '../../../core/utils/logger.dart';
 
 class ProfileScreen extends StatefulWidget {
   final int availableCoins;
@@ -26,6 +27,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserProfileModel? _userProfile;
   bool _isLoading = true;
+  String? _errorMessage;
   final ProfileService _profileService = ProfileService();
 
   @override
@@ -34,18 +36,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserProfile();
   }
 
+  /// Load user profile using ProfileService (which uses UserService for real API calls)
   Future<void> _loadUserProfile() async {
     try {
+      Logger.info('📱 ProfileScreen: Loading user profile...');
+      
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      // ProfileService will use UserService to make real API calls
       final profile = await _profileService.getCurrentUserProfile();
+      
       setState(() {
         _userProfile = profile;
         _isLoading = false;
       });
+      
+      Logger.success('📱 ProfileScreen: Profile loaded successfully');
+      
     } catch (e) {
       setState(() {
+        _errorMessage = 'Failed to load profile: $e';
         _isLoading = false;
       });
-      // Handle error
+      
+      Logger.error('📱 ProfileScreen: Failed to load profile: $e');
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -57,10 +75,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  /// Refresh profile data
   Future<void> _refreshProfile() async {
+    Logger.info('📱 ProfileScreen: Refreshing profile...');
+    
     setState(() {
       _isLoading = true;
     });
+    
     await _loadUserProfile();
   }
 
@@ -116,7 +138,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Navigate to edit profile screen
   void _navigateToEditProfile() {
+    Logger.info('📱 ProfileScreen: Navigating to edit profile');
+    
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -124,13 +149,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     ).then((updatedProfile) {
       if (updatedProfile != null) {
-        // Refresh the profile data
+        Logger.info('📱 ProfileScreen: Profile updated, refreshing data');
+        // Refresh the profile data after successful update
         _loadUserProfile();
       }
     });
   }
 
+  /// Navigate to settings screen
   void _navigateToSettings() {
+    Logger.info('📱 ProfileScreen: Navigating to settings');
+    
     // TODO: Navigate to settings screen
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -140,7 +169,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Navigate to help & support screen
   void _navigateToHelpSupport() {
+    Logger.info('📱 ProfileScreen: Navigating to help & support');
+    
     // TODO: Navigate to help & support screen
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -150,8 +182,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Navigate to Super Lover screen
   void _navigateToSuperLover() {
     if (_userProfile != null) {
+      Logger.info('📱 ProfileScreen: Navigating to Super Lover screen');
+      
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -162,10 +197,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ).then((result) {
         if (result == true) {
+          Logger.info('📱 ProfileScreen: Super Lover status changed, refreshing data');
           // Refresh the profile data if super lover status changed
           _loadUserProfile();
         }
       });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please wait while profile data is loading...'),
+          backgroundColor: Colors.orange,
+        ),
+      );
     }
   }
 }
