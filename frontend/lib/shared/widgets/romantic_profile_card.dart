@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user_profile.dart';
 import '../../features/coins/services/coin_service.dart';
-import '../../features/dashboard/screens/calling_screen.dart';
-import '../../features/dashboard/screens/messaging_screen.dart';
+import '../../features/calls/screens/outgoing_call_screen.dart';
+import '../../features/calls/models/call_models.dart';
+import '../../features/messaging/screens/chat_screen.dart';
+import '../../features/messaging/models/message_models.dart';
 import 'dart:io'; // Added for File
 import 'dart:ui'; // Added for ImageFilter
 
@@ -498,52 +500,35 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
      void _handleCallAction() {
      widget.onActionPressed('Call', CoinService.callCost, widget.profile.name);
      // Navigate to calling screen
-     Navigator.push(
-       context,
-       MaterialPageRoute(
-         builder: (context) => CallingScreen(
-           caller: UserProfile(
-             id: widget.profile.id,
-             name: widget.profile.name,
-             fullName: widget.profile.fullName,
-             age: widget.profile.age,
-             gender: widget.profile.gender,
-             bio: widget.profile.bio,
-             location: widget.profile.location,
-             image: widget.profile.image,
-             photoUrl: widget.profile.image.startsWith('http') ? widget.profile.image : null,
-             online: widget.profile.online,
-             lastSeen: widget.profile.lastSeen,
-           ),
-           isIncoming: false,
-         ),
-       ),
-     );
+           Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OutgoingCallScreen(
+            recipient: widget.profile,
+          ),
+        ),
+      );
    }
 
      void _handleChatAction() {
      widget.onActionPressed('Chat', CoinService.chatCost, widget.profile.name);
      // Navigate to messaging screen
-     Navigator.push(
-       context,
-       MaterialPageRoute(
-         builder: (context) => MessagingScreen(
-           recipient: UserProfile(
-             id: widget.profile.id,
-             name: widget.profile.name,
-             fullName: widget.profile.fullName,
-             age: widget.profile.age,
-             gender: widget.profile.gender,
-             bio: widget.profile.bio,
-             location: widget.profile.location,
-             image: widget.profile.image,
-             photoUrl: widget.profile.image.startsWith('http') ? widget.profile.image : null,
-             online: widget.profile.online,
-             lastSeen: widget.profile.lastSeen,
-           ),
-         ),
-       ),
-     );
+           // Create a conversation for the chat screen
+      final conversation = Conversation(
+        id: 'conv_${widget.profile.id}',
+        participant: widget.profile,
+        lastMessage: null,
+        lastActivity: DateTime.now(),
+        unreadCount: 0,
+        isOnline: widget.profile.online,
+      );
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(conversation: conversation),
+        ),
+      );
    }
 
      Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {

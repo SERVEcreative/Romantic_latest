@@ -1,42 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../shared/models/user_profile.dart';
-import 'calling_screen.dart';
+import '../models/message_models.dart';
+import '../services/messaging_service.dart';
+import '../../calls/screens/outgoing_call_screen.dart';
 
-class Message {
-  final String id;
-  final String text;
-  final DateTime timestamp;
-  final bool isFromMe;
-  final bool isRead;
-  final MessageType type;
+class ChatScreen extends StatefulWidget {
+  final Conversation conversation;
 
-  Message({
-    required this.id,
-    required this.text,
-    required this.timestamp,
-    required this.isFromMe,
-    this.isRead = false,
-    this.type = MessageType.text,
-  });
-}
-
-enum MessageType { text, image, emoji, voice }
-
-class MessagingScreen extends StatefulWidget {
-  final UserProfile recipient;
-
-  const MessagingScreen({
+  const ChatScreen({
     super.key,
-    required this.recipient,
+    required this.conversation,
   });
 
   @override
-  State<MessagingScreen> createState() => _MessagingScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _MessagingScreenState extends State<MessagingScreen>
+class _ChatScreenState extends State<ChatScreen>
     with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -55,7 +36,7 @@ class _MessagingScreenState extends State<MessagingScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
-    _loadMockMessages();
+    _loadMessages();
   }
 
   void _initializeAnimations() {
@@ -84,44 +65,16 @@ class _MessagingScreenState extends State<MessagingScreen>
     ));
   }
 
-  void _loadMockMessages() {
-    _messages.addAll([
-      Message(
-        id: '1',
-        text: 'Hey! How are you doing? 😊',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-        isFromMe: false,
-        isRead: true,
-      ),
-      Message(
-        id: '2',
-        text: 'Hi! I\'m doing great, thanks for asking! How about you?',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
-        isFromMe: true,
-        isRead: true,
-      ),
-      Message(
-        id: '3',
-        text: 'I\'m good too! Would you like to grab coffee sometime? ☕',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
-        isFromMe: false,
-        isRead: true,
-      ),
-      Message(
-        id: '4',
-        text: 'That sounds wonderful! I\'d love to meet you 💕',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 2)),
-        isFromMe: true,
-        isRead: true,
-      ),
-      Message(
-        id: '5',
-        text: 'Great! How about tomorrow at 3 PM?',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 1)),
-        isFromMe: false,
-        isRead: false,
-      ),
-    ]);
+  Future<void> _loadMessages() async {
+    try {
+      final messages = await MessagingService.getMessages(widget.conversation.id);
+      setState(() {
+        _messages.addAll(messages);
+      });
+      _scrollToBottom();
+    } catch (e) {
+      // Handle error
+    }
   }
 
   @override
@@ -201,7 +154,7 @@ class _MessagingScreenState extends State<MessagingScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.recipient.fullName,
+                  widget.conversation.participant.fullName,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -213,17 +166,17 @@ class _MessagingScreenState extends State<MessagingScreen>
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
+                      decoration: BoxDecoration(
+                        color: widget.conversation.isOnline ? Colors.green : Colors.grey,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Online',
+                      widget.conversation.isOnline ? 'Online' : 'Offline',
                       style: GoogleFonts.poppins(
                         fontSize: 12,
-                        color: Colors.green,
+                        color: widget.conversation.isOnline ? Colors.green : Colors.grey,
                       ),
                     ),
                   ],
@@ -239,8 +192,8 @@ class _MessagingScreenState extends State<MessagingScreen>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CallingScreen(
-                        caller: widget.recipient,
+                      builder: (context) => OutgoingCallScreen(
+                        recipient: widget.conversation.participant,
                       ),
                     ),
                   );
@@ -276,9 +229,9 @@ class _MessagingScreenState extends State<MessagingScreen>
         ),
       ),
       child: ClipOval(
-        child: widget.recipient.photoUrl != null
+        child: widget.conversation.participant.photoUrl != null
             ? Image.network(
-                widget.recipient.photoUrl!,
+                widget.conversation.participant.photoUrl!,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(
@@ -678,6 +631,9 @@ class _MessagingScreenState extends State<MessagingScreen>
     });
 
     _scrollToBottom();
+
+    // Send message to service
+    MessagingService.sendMessage(widget.conversation.id, message.text);
 
     // Simulate typing indicator
     setState(() {

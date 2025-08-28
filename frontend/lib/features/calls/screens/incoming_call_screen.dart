@@ -2,22 +2,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../shared/models/user_profile.dart';
+import '../models/call_models.dart';
+import '../services/call_service.dart';
 
-class CallingScreen extends StatefulWidget {
+class IncomingCallScreen extends StatefulWidget {
   final UserProfile caller;
-  final bool isIncoming;
 
-  const CallingScreen({
+  const IncomingCallScreen({
     super.key,
     required this.caller,
-    this.isIncoming = false,
   });
 
   @override
-  State<CallingScreen> createState() => _CallingScreenState();
+  State<IncomingCallScreen> createState() => _IncomingCallScreenState();
 }
 
-class _CallingScreenState extends State<CallingScreen>
+class _IncomingCallScreenState extends State<IncomingCallScreen>
     with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rippleController;
@@ -29,7 +29,7 @@ class _CallingScreenState extends State<CallingScreen>
   bool _isVideoEnabled = false;
   Duration _callDuration = Duration.zero;
   late Timer _timer;
-
+  bool _isCallAccepted = false;
 
   @override
   void initState() {
@@ -71,9 +71,11 @@ class _CallingScreenState extends State<CallingScreen>
 
   void _startCallTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _callDuration += const Duration(seconds: 1);
-      });
+      if (_isCallAccepted) {
+        setState(() {
+          _callDuration += const Duration(seconds: 1);
+        });
+      }
     });
   }
 
@@ -129,14 +131,15 @@ class _CallingScreenState extends State<CallingScreen>
             ),
           ),
           const Spacer(),
-          Text(
-            _formatDuration(_callDuration),
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
+          if (_isCallAccepted)
+            Text(
+              _formatDuration(_callDuration),
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
           const Spacer(),
           const SizedBox(width: 48), // Balance the header
         ],
@@ -275,7 +278,7 @@ class _CallingScreenState extends State<CallingScreen>
         ),
         const SizedBox(height: 8),
         Text(
-          widget.isIncoming ? 'Incoming call...' : 'Calling...',
+          _isCallAccepted ? 'Connected' : 'Incoming call...',
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Colors.white.withValues(alpha: 0.8),
@@ -353,31 +356,33 @@ class _CallingScreenState extends State<CallingScreen>
       padding: const EdgeInsets.all(30),
       child: Column(
         children: [
-          // Secondary controls
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildControlButton(
-                icon: _isMuted ? Icons.mic_off : Icons.mic,
-                label: _isMuted ? 'Unmute' : 'Mute',
-                color: _isMuted ? Colors.red : Colors.white,
-                onTap: () => setState(() => _isMuted = !_isMuted),
-              ),
-              _buildControlButton(
-                icon: _isSpeakerOn ? Icons.volume_up : Icons.volume_down,
-                label: _isSpeakerOn ? 'Speaker' : 'Speaker',
-                color: _isSpeakerOn ? Colors.blue : Colors.white,
-                onTap: () => setState(() => _isSpeakerOn = !_isSpeakerOn),
-              ),
-              _buildControlButton(
-                icon: _isVideoEnabled ? Icons.videocam : Icons.videocam_off,
-                label: _isVideoEnabled ? 'Video' : 'Video',
-                color: _isVideoEnabled ? Colors.green : Colors.white,
-                onTap: () => setState(() => _isVideoEnabled = !_isVideoEnabled),
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
+          // Secondary controls (only show when call is accepted)
+          if (_isCallAccepted) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildControlButton(
+                  icon: _isMuted ? Icons.mic_off : Icons.mic,
+                  label: _isMuted ? 'Unmute' : 'Mute',
+                  color: _isMuted ? Colors.red : Colors.white,
+                  onTap: () => setState(() => _isMuted = !_isMuted),
+                ),
+                _buildControlButton(
+                  icon: _isSpeakerOn ? Icons.volume_up : Icons.volume_down,
+                  label: _isSpeakerOn ? 'Speaker' : 'Speaker',
+                  color: _isSpeakerOn ? Colors.blue : Colors.white,
+                  onTap: () => setState(() => _isSpeakerOn = !_isSpeakerOn),
+                ),
+                _buildControlButton(
+                  icon: _isVideoEnabled ? Icons.videocam : Icons.videocam_off,
+                  label: _isVideoEnabled ? 'Video' : 'Video',
+                  color: _isVideoEnabled ? Colors.green : Colors.white,
+                  onTap: () => setState(() => _isVideoEnabled = !_isVideoEnabled),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+          ],
           // Main call controls
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -385,21 +390,15 @@ class _CallingScreenState extends State<CallingScreen>
               _buildMainControlButton(
                 icon: Icons.call_end,
                 color: Colors.red,
-                onTap: () => Navigator.pop(context),
+                onTap: _rejectCall,
                 isEndCall: true,
               ),
-              if (widget.isIncoming) ...[
+              if (!_isCallAccepted)
                 _buildMainControlButton(
                   icon: Icons.call,
                   color: Colors.green,
-                  onTap: () {
-                    // Accept call logic
-                    setState(() {
-                      // Update call status
-                    });
-                  },
+                  onTap: _acceptCall,
                 ),
-              ],
             ],
           ),
         ],
@@ -476,6 +475,28 @@ class _CallingScreenState extends State<CallingScreen>
         ),
       ),
     );
+  }
+
+  Future<void> _acceptCall() async {
+    try {
+      await CallService.acceptCall('incoming_call_${widget.caller.id}');
+      setState(() {
+        _isCallAccepted = true;
+      });
+    } catch (e) {
+      // Handle error
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _rejectCall() async {
+    try {
+      await CallService.rejectCall('incoming_call_${widget.caller.id}');
+      Navigator.pop(context);
+    } catch (e) {
+      // Handle error
+      Navigator.pop(context);
+    }
   }
 
   String _formatDuration(Duration duration) {

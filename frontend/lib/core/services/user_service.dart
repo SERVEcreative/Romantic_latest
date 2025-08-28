@@ -204,7 +204,7 @@ class UserService {
   }
 
   /// Become Super Lover (Real API call)
-  static Future<SuperLoverData> becomeSuperLover() async {
+  static Future<Map<String, dynamic>> becomeSuperLover() async {
     try {
       Logger.info('💖 Becoming Super Lover...');
       
@@ -229,7 +229,7 @@ class UserService {
       // Handle the backend response format
       if (response['success'] == true) {
         Logger.success('✅ Successfully became Super Lover');
-        return SuperLoverData.fromJson(response['data'] ?? response);
+        return response['data'] ?? response;
       } else {
         throw Exception('Failed to become Super Lover or invalid response format');
       }
@@ -241,7 +241,7 @@ class UserService {
   }
 
   /// Update Super Lover status (Real API call)
-  static Future<SuperLoverData> updateSuperLoverStatus(String status) async {
+  static Future<Map<String, dynamic>> updateSuperLoverStatus(String status) async {
     try {
       Logger.info('🔄 Updating Super Lover status to: $status');
       
@@ -269,7 +269,7 @@ class UserService {
       // Handle the backend response format
       if (response['success'] == true) {
         Logger.success('✅ Super Lover status updated successfully');
-        return SuperLoverData.fromJson(response['data'] ?? response);
+        return response['data'] ?? response;
       } else {
         throw Exception('Failed to update Super Lover status or invalid response format');
       }
@@ -281,7 +281,7 @@ class UserService {
   }
 
   /// Update Super Lover bio (Real API call)
-  static Future<SuperLoverData> updateSuperLoverBio(String bio) async {
+  static Future<Map<String, dynamic>> updateSuperLoverBio(String bio) async {
     try {
       Logger.info('📝 Updating Super Lover bio...');
       
@@ -309,7 +309,7 @@ class UserService {
       // Handle the backend response format
       if (response['success'] == true) {
         Logger.success('✅ Super Lover bio updated successfully');
-        return SuperLoverData.fromJson(response['data'] ?? response);
+        return response['data'] ?? response;
       } else {
         throw Exception('Failed to update Super Lover bio or invalid response format');
       }
