@@ -3,7 +3,7 @@ import '../../coins/services/coin_service.dart';
 import '../../coins/services/admob_service.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../services/dashboard_service.dart';
-import '../widgets/home/home_widget.dart';
+import '../../discovery/screens/discovery_screen.dart';
 import '../../calls/screens/call_history_screen.dart';
 import '../../messaging/screens/conversation_list_screen.dart';
 import '../widgets/navigation/bottom_navigation_widget.dart';
@@ -73,12 +73,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DashboardService.showLogoutDialog(context);
   }
 
-
-
   Widget _getCurrentScreen() {
     switch (_selectedIndex) {
       case 0:
-        return HomeWidget(
+        return DiscoveryScreen(
           availableCoins: _availableCoins,
           onActionPressed: _handleActionPressed,
           onCoinOptionsTap: _showCoinOptions,
@@ -94,15 +92,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onLogoutTap: _showLogoutDialog,
         );
       default:
-        return HomeWidget(
+        return DiscoveryScreen(
           availableCoins: _availableCoins,
           onActionPressed: _handleActionPressed,
           onCoinOptionsTap: _showCoinOptions,
         );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../shared/models/sample_data.dart';
-import '../../../../shared/widgets/romantic_profile_card.dart';
+import '../../../shared/models/sample_data.dart';
+import '../widgets/romantic_profile_card.dart';
 
-class HomeWidget extends StatelessWidget {
+class DiscoveryScreen extends StatelessWidget {
   final int availableCoins;
   final Function(String, int, String) onActionPressed;
   final VoidCallback onCoinOptionsTap;
 
-  const HomeWidget({
+  const DiscoveryScreen({
     super.key,
     required this.availableCoins,
     required this.onActionPressed,
@@ -52,7 +52,7 @@ class HomeWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Romantic Hearts',
+                  'Discover People',
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -120,8 +120,6 @@ class HomeWidget extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _buildProfilesList() {
     return ListView.builder(

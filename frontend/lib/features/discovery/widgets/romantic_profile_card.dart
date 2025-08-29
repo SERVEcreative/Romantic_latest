@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../models/user_profile.dart';
-import '../../features/coins/services/coin_service.dart';
-import '../../features/calls/screens/outgoing_call_screen.dart';
-import '../../features/calls/models/call_models.dart';
-import '../../features/messaging/screens/chat_screen.dart';
-import '../../features/messaging/models/message_models.dart';
-import 'dart:io'; // Added for File
-import 'dart:ui'; // Added for ImageFilter
+import '../../../shared/models/user_profile.dart';
+import '../../coins/services/coin_service.dart';
+import '../../calls/screens/outgoing_call_screen.dart';
+import '../../calls/models/call_models.dart';
+import '../../messaging/screens/chat_screen.dart';
+import '../../messaging/models/message_models.dart';
+import 'dart:io';
+import 'dart:ui';
 
 class RomanticProfileCard extends StatefulWidget {
   final UserProfile profile;
@@ -33,59 +33,63 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: 2,
+          ),
+          BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 40,
+            offset: const Offset(0, 16),
+            spreadRadius: 4,
           ),
         ],
       ),
-      child: Column(
-        children: [
-          // Photo area with overlay info
-          _buildPhotoArea(),
-          
-          // Action buttons
-          // _buildActionButtons(), // This line is removed as buttons are now positioned over the photo
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          children: [
+            _buildPhotoArea(),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPhotoArea() {
     return Container(
-      height: 480, // Increased height to accommodate action buttons
+      height: 480,
       width: double.infinity,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
       ),
       child: Stack(
         children: [
-          // Full-size background image
           ClipRRect(
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
             child: _buildProfileImage(),
           ),
           
-          // Gradient overlay for better text readability
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              height: 280, // Increased to cover action buttons area
+              height: 280,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -101,15 +105,13 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
             ),
           ),
           
-          // Translucent profile info overlay
           Positioned(
-            bottom: 80, // Moved up to make space for action buttons
+            bottom: 80,
             left: 0,
             right: 0,
             child: _buildProfileInfoOverlay(),
           ),
           
-          // Action buttons positioned over the photo background
           Positioned(
             bottom: 0,
             left: 0,
@@ -117,17 +119,10 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
             child: _buildActionButtons(),
           ),
           
-          // Online indicator and Super Lover badge
           Positioned(
             top: 16,
             right: 16,
-            child: Column(
-              children: [
-                if (widget.profile.isSuperLover) _buildSuperLoverBadge(),
-                const SizedBox(height: 8),
-                _buildOnlineIndicator(),
-              ],
-            ),
+            child: _buildOnlineIndicator(),
           ),
         ],
       ),
@@ -135,18 +130,17 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
   }
 
   Widget _buildProfileInfoOverlay() {
-          return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Name and age with translucent background
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: BackdropFilter(
@@ -160,21 +154,21 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                                         Text(
-                       widget.profile.name,
-                       style: GoogleFonts.poppins(
-                         fontSize: 22,
-                         fontWeight: FontWeight.bold,
-                         color: Colors.white,
-                         shadows: [
-                           Shadow(
-                             color: Colors.black.withValues(alpha: 0.5),
-                             offset: const Offset(0, 1),
-                             blurRadius: 3,
-                           ),
-                         ],
-                       ),
-                     ),
+                    Text(
+                      widget.profile.name,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            offset: const Offset(0, 1),
+                            blurRadius: 3,
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -182,14 +176,14 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                         color: Colors.pink.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                                             child: Text(
-                         '${widget.profile.age}',
-                         style: GoogleFonts.poppins(
-                           fontSize: 12,
-                           fontWeight: FontWeight.bold,
-                           color: Colors.white,
-                         ),
-                       ),
+                      child: Text(
+                        '${widget.profile.age}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -198,7 +192,6 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
           ),
           const SizedBox(height: 8),
           
-          // Location with translucent background
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: BackdropFilter(
@@ -218,20 +211,20 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
                       color: Colors.white,
                     ),
                     const SizedBox(width: 4),
-                                         Text(
-                       widget.profile.location,
-                       style: GoogleFonts.poppins(
-                         fontSize: 14,
-                         color: Colors.white,
-                         shadows: [
-                           Shadow(
-                             color: Colors.black.withValues(alpha: 0.5),
-                             offset: const Offset(0, 1),
-                             blurRadius: 2,
-                           ),
-                         ],
-                       ),
-                     ),
+                    Text(
+                      widget.profile.location,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            offset: const Offset(0, 1),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -239,7 +232,6 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
           ),
           const SizedBox(height: 8),
           
-          // Bio with translucent background
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: BackdropFilter(
@@ -311,44 +303,37 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
   }
 
   Widget _buildProfileImage() {
-    // Check if the image path is a local asset
     if (widget.profile.image.startsWith('assets/')) {
       return Image.asset(
         widget.profile.image,
         width: double.infinity,
-        height: 480, // Updated height
+        height: 480,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return _buildFallbackImage();
         },
       );
-    }
-    // Check if it's a local file path
-    else if (widget.profile.image.startsWith('/') || widget.profile.image.startsWith('file://')) {
+    } else if (widget.profile.image.startsWith('/') || widget.profile.image.startsWith('file://')) {
       return Image.file(
         File(widget.profile.image.replaceFirst('file://', '')),
         width: double.infinity,
-        height: 480, // Updated height
+        height: 480,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return _buildFallbackImage();
         },
       );
-    }
-    // Check if it's a network URL
-    else if (widget.profile.image.startsWith('http://') || widget.profile.image.startsWith('https://')) {
+    } else if (widget.profile.image.startsWith('http://') || widget.profile.image.startsWith('https://')) {
       return Image.network(
         widget.profile.image,
         width: double.infinity,
-        height: 480, // Updated height
+        height: 480,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return _buildFallbackImage();
         },
       );
-    }
-    // Fallback to emoji or default image
-    else {
+    } else {
       return _buildFallbackImage();
     }
   }
@@ -356,7 +341,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
   Widget _buildFallbackImage() {
     return Container(
       width: double.infinity,
-      height: 480, // Updated height
+      height: 480,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -377,57 +362,21 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               color: Colors.grey[400],
             ),
             const SizedBox(height: 16),
-                         Text(
-               widget.profile.name[0].toUpperCase(),
-               style: GoogleFonts.poppins(
-                 fontSize: 48,
-                 fontWeight: FontWeight.bold,
-                 color: Colors.grey[600],
-               ),
-             ),
+            Text(
+              widget.profile.name[0].toUpperCase(),
+              style: GoogleFonts.poppins(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSuperLoverBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.amber, Colors.orange],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.star,
-            size: 12,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            'Super Lover',
-            style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildOnlineIndicator() {
     return Container(
@@ -469,8 +418,14 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
   }
 
   Widget _buildActionButtons() {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -478,7 +433,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               'Call',
               Icons.call,
               Colors.green,
-              widget.profile.isSuperLover ? 50 : CoinService.callCost, // Super Lovers cost 50 coins
+              widget.profile.isSuperLover ? 50 : CoinService.callCost,
               () => _handleCallAction(),
             ),
           ),
@@ -488,7 +443,7 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
               'Chat',
               Icons.chat_bubble,
               Colors.blue,
-              widget.profile.isSuperLover ? 25 : CoinService.chatCost, // Super Lovers cost 25 coins for chat
+              widget.profile.isSuperLover ? 25 : CoinService.chatCost,
               () => _handleChatAction(),
             ),
           ),
@@ -497,42 +452,39 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     );
   }
 
-     void _handleCallAction() {
-     widget.onActionPressed('Call', CoinService.callCost, widget.profile.name);
-     // Navigate to calling screen
-           Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OutgoingCallScreen(
-            recipient: widget.profile,
-          ),
+  void _handleCallAction() {
+    widget.onActionPressed('Call', CoinService.callCost, widget.profile.name);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OutgoingCallScreen(
+          recipient: widget.profile,
         ),
-      );
-   }
+      ),
+    );
+  }
 
-     void _handleChatAction() {
-     widget.onActionPressed('Chat', CoinService.chatCost, widget.profile.name);
-     // Navigate to messaging screen
-           // Create a conversation for the chat screen
-      final conversation = Conversation(
-        id: 'conv_${widget.profile.id}',
-        participant: widget.profile,
-        lastMessage: null,
-        lastActivity: DateTime.now(),
-        unreadCount: 0,
-        isOnline: widget.profile.online,
-      );
-      
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatScreen(conversation: conversation),
-        ),
-      );
-   }
+  void _handleChatAction() {
+    widget.onActionPressed('Chat', CoinService.chatCost, widget.profile.name);
+    final conversation = Conversation(
+      id: 'conv_${widget.profile.id}',
+      participant: widget.profile,
+      lastMessage: null,
+      lastActivity: DateTime.now(),
+      unreadCount: 0,
+      isOnline: widget.profile.online,
+    );
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(conversation: conversation),
+      ),
+    );
+  }
 
-     Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {
-     final hasEnoughCoins = widget.availableCoins >= cost;
+  Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {
+    final hasEnoughCoins = widget.availableCoins >= cost;
     
     return Container(
       height: 44,
