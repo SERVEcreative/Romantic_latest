@@ -6,6 +6,7 @@ import '../widgets/profile_card_widget.dart';
 import '../widgets/profile_menu_widget.dart';
 import 'edit_profile_screen.dart';
 import 'super_lover_screen.dart';
+import 'pricing_management_screen.dart';
 import '../../../core/utils/logger.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -128,6 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onSettingsTap: _navigateToSettings,
                         onHelpSupportTap: _navigateToHelpSupport,
                         onSuperLoverTap: _navigateToSuperLover,
+                        onPricingManagementTap: _navigateToPricingManagement,
                       ),
                       const SizedBox(height: 20),
                     ],
@@ -210,5 +212,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     }
+  }
+
+  /// Navigate to Pricing Management screen
+  void _navigateToPricingManagement() {
+    Logger.info('📱 ProfileScreen: Navigating to Pricing Management screen');
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PricingManagementScreen(),
+      ),
+    ).then((result) {
+      if (result == true) {
+        Logger.info('📱 ProfileScreen: Pricing updated, refreshing data');
+        // Refresh the profile data if pricing was updated
+        _loadUserProfile();
+      }
+    });
   }
 }

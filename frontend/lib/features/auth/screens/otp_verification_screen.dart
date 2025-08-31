@@ -171,7 +171,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                 userId: user?.id,
               );
               
-              if (profileCompletion < 60) { // 60% is the minimum profile completion for login
+              if (profileCompletion < 60) { // 80% is the minimum profile completion for login
                 // Profile incomplete - show registration dialog
                 _showRegistrationDialog(token);
               } else {

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../coins/services/admob_service.dart';
 import '../../coins/widgets/coin_dialogs.dart';
+import '../../auth/services/logout_service.dart';
+import '../../../core/widgets/loading_dialog.dart';
+import '../../../core/widgets/confirmation_dialog.dart';
+import 'navigation_service.dart';
 
 class DashboardService {
   static void handleActionPressed(
@@ -51,30 +54,71 @@ class DashboardService {
     });
   }
 
-  static void showLogoutDialog(BuildContext context) {
-    showDialog(
+    static Future<void> showLogoutDialog(BuildContext context) async {
+    // Show confirmation dialog
+    final shouldLogout = await ConfirmationDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Logout', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-        content: Text('Are you sure you want to logout?', style: GoogleFonts.poppins()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: GoogleFonts.poppins()),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.of(context).pushReplacementNamed('/login');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pink,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Text('Logout', style: GoogleFonts.poppins(color: Colors.white)),
-          ),
-        ],
+      title: 'Logout',
+      message: 'Are you sure you want to logout?',
+      confirmText: 'Logout',
+    );
+
+    if (!shouldLogout) return;
+
+    // Show loading dialog
+    LoadingDialog.show(context, message: 'Logging out...');
+
+    try {
+      // Perform logout using dedicated service
+      final result = await LogoutService.performLogout();
+      
+      // Hide loading dialog
+      LoadingDialog.hide(context);
+
+      // Show appropriate feedback
+      if (context.mounted) {
+        _showLogoutFeedback(context, result);
+      }
+      
+      // Navigate to login screen after a short delay to allow feedback to show
+      Future.delayed(const Duration(milliseconds: 500), () {
+        NavigationService.navigateToLogin();
+      });
+      
+    } catch (e) {
+      // Hide loading dialog
+      LoadingDialog.hide(context);
+      
+      // Show error feedback
+      if (context.mounted) {
+        _showLogoutFeedback(context, LogoutResult(
+          success: false,
+          message: 'Logout failed: ${e.toString()}',
+          serverLogoutSuccessful: false,
+        ));
+      }
+      
+      // Navigate to login screen even on error
+      Future.delayed(const Duration(milliseconds: 500), () {
+        NavigationService.navigateToLogin();
+      });
+    }
+  }
+
+  /// Show appropriate feedback based on logout result
+  static void _showLogoutFeedback(BuildContext context, LogoutResult result) {
+    if (!context.mounted) return;
+
+    final backgroundColor = result.success ? Colors.green : Colors.orange;
+    final message = result.serverLogoutSuccessful 
+        ? 'Logged out successfully'
+        : 'Logged out locally (server error: ${result.message})';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+        duration: const Duration(seconds: 2),
       ),
     );
   }

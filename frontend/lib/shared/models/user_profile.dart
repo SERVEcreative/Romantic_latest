@@ -32,6 +32,11 @@ class UserProfile {
   final int? superLoverTotalEarnings;
   final DateTime? superLoverJoinedAt;
 
+  // Pricing fields
+  final double callCost;
+  final double chatCost;
+  final double videoCallCost;
+
   const UserProfile({
     required this.id,
     required this.name,
@@ -56,6 +61,9 @@ class UserProfile {
     this.superLoverCallCount,
     this.superLoverTotalEarnings,
     this.superLoverJoinedAt,
+    this.callCost = 30.0, // Default call cost
+    this.chatCost = 15.0, // Default chat cost
+    this.videoCallCost = 60.0, // Default video call cost
   });
 
   // Factory constructor from API response
@@ -86,6 +94,9 @@ class UserProfile {
       superLoverJoinedAt: map['superLoverJoinedAt'] != null 
           ? DateTime.tryParse(map['superLoverJoinedAt']) 
           : null,
+      callCost: (map['call_cost'] ?? 30.0).toDouble(),
+      chatCost: (map['chat_cost'] ?? 15.0).toDouble(),
+      videoCallCost: (map['video_call_cost'] ?? 60.0).toDouble(),
     );
   }
 
@@ -115,6 +126,9 @@ class UserProfile {
       'superLoverCallCount': superLoverCallCount,
       'superLoverTotalEarnings': superLoverTotalEarnings,
       'superLoverJoinedAt': superLoverJoinedAt?.toIso8601String(),
+      'call_cost': callCost,
+      'chat_cost': chatCost,
+      'video_call_cost': videoCallCost,
     };
   }
 
@@ -143,6 +157,9 @@ class UserProfile {
     int? superLoverCallCount,
     int? superLoverTotalEarnings,
     DateTime? superLoverJoinedAt,
+    double? callCost,
+    double? chatCost,
+    double? videoCallCost,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -168,6 +185,9 @@ class UserProfile {
       superLoverCallCount: superLoverCallCount ?? this.superLoverCallCount,
       superLoverTotalEarnings: superLoverTotalEarnings ?? this.superLoverTotalEarnings,
       superLoverJoinedAt: superLoverJoinedAt ?? this.superLoverJoinedAt,
+      callCost: callCost ?? this.callCost,
+      chatCost: chatCost ?? this.chatCost,
+      videoCallCost: videoCallCost ?? this.videoCallCost,
     );
   }
 
@@ -191,6 +211,48 @@ class UserProfile {
     if (email.isNotEmpty) completedFields++;
     
     return completedFields / totalFields;
+  }
+
+  // Factory constructor for online users (minimal data from your backend)
+  factory UserProfile.fromOnlineUserMap(Map<String, dynamic> map) {
+    // Extract pricing data from nested pricing object
+    final pricing = map['pricing'] as Map<String, dynamic>? ?? {};
+    
+    // Handle profile picture with better null checking
+    final profilePicture = map['profile_picture'];
+    final hasValidProfilePicture = profilePicture != null && 
+                                  profilePicture.toString().isNotEmpty && 
+                                  profilePicture.toString() != 'null';
+    
+    return UserProfile(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      fullName: map['name'] ?? '', // Using name as fullName for online users
+      age: map['age'] ?? 0,
+      gender: map['gender'] ?? '', // Now provided in online users endpoint
+      location: map['location'] ?? '', // Now provided in online users endpoint
+      bio: map['bio'] ?? '', // Now provided in online users endpoint
+      image: hasValidProfilePicture ? profilePicture.toString() : '',
+      photoUrl: hasValidProfilePicture ? profilePicture.toString() : null,
+      email: '', // Not provided in online users endpoint
+      phoneNumber: '', // Not provided in online users endpoint
+      online: map['status'] == 'online',
+      lastSeen: map['last_seen'] ?? '',
+      isVerified: false, // Not provided in online users endpoint
+      createdAt: DateTime.now(), // Not provided in online users endpoint
+      updatedAt: DateTime.now(), // Not provided in online users endpoint
+      isSuperLover: false, // Not provided in online users endpoint
+      superLoverStatus: null,
+      superLoverBio: null,
+      superLoverRating: null,
+      superLoverCallCount: null,
+      superLoverTotalEarnings: null,
+      superLoverJoinedAt: null,
+      // Use pricing from nested pricing object
+      callCost: (pricing['audio_call_cost'] ?? 30.0).toDouble(),
+      chatCost: (pricing['sms_cost'] ?? 15.0).toDouble(),
+      videoCallCost: (pricing['video_call_cost'] ?? 60.0).toDouble(),
+    );
   }
 
   // Static factory for current user (mock)

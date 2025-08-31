@@ -38,12 +38,16 @@ class AuthResponse {
   final bool success;
   final String message;
   final String? token;
+  final String? refreshToken;
+  final String? userId;
   final UserData? user;
 
   AuthResponse({
     required this.success,
     required this.message,
     this.token,
+    this.refreshToken,
+    this.userId,
     this.user,
   });
 
@@ -51,7 +55,9 @@ class AuthResponse {
     return AuthResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
-      token: json['token'],
+      token: json['token'] ?? json['accessToken'],
+      refreshToken: json['refreshToken'], // Will be null if backend doesn't provide it
+      userId: json['userId'] ?? json['user']?['id'],
       user: json['user'] != null ? UserData.fromJson(json['user']) : null,
     );
   }
@@ -61,6 +67,8 @@ class AuthResponse {
       'success': success,
       'message': message,
       'token': token,
+      'refreshToken': refreshToken,
+      'userId': userId,
       'user': user?.toJson(),
     };
   }
@@ -214,6 +222,34 @@ class ProfileData {
       'isSuperLover': isSuperLover,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
+}
+
+class LogoutResponse {
+  final bool success;
+  final String message;
+  final Map<String, dynamic>? data;
+
+  LogoutResponse({
+    required this.success,
+    required this.message,
+    this.data,
+  });
+
+  factory LogoutResponse.fromJson(Map<String, dynamic> json) {
+    return LogoutResponse(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] as Map<String, dynamic>?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'message': message,
+      'data': data,
     };
   }
 }

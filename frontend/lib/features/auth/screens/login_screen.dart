@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/services/auth_service.dart';
+import '../../dashboard/services/navigation_service.dart';
 import 'otp_verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -25,6 +26,11 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
+    
+    // Clear the phone controller to ensure no previous data remains
+    _phoneController.clear();
+    _completePhoneNumber = '';
+    
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -47,6 +53,22 @@ class _LoginScreenState extends State<LoginScreen>
     ));
     
     _animationController.forward();
+    
+    // Check if user is already logged in
+    _checkAuthStatus();
+  }
+  
+  Future<void> _checkAuthStatus() async {
+    try {
+      final isLoggedIn = await AuthService.isLoggedIn();
+      if (isLoggedIn && mounted) {
+        // Navigate to dashboard if already logged in
+        NavigationService.navigateToDashboard();
+      }
+    } catch (e) {
+      // If there's an error checking auth status, stay on login screen
+      print('Error checking auth status: $e');
+    }
   }
 
   @override

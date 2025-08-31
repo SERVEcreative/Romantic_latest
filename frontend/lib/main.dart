@@ -29,11 +29,15 @@ void main() async {
 class RomanticLoginApp extends StatelessWidget {
   const RomanticLoginApp({super.key});
 
+  // Global navigation key for accessing navigator from anywhere
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey, // Add global navigation key
       theme: ThemeData(
         primarySwatch: Colors.pink,
         textTheme: GoogleFonts.poppinsTextTheme(),

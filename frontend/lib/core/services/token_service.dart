@@ -95,7 +95,17 @@ class TokenService {
   static Future<bool> isLoggedIn() async {
     try {
       final token = await getToken();
-      return token != null && token.isNotEmpty;
+      
+      // Check if we have a valid access token
+      if (token != null && token.isNotEmpty) {
+        // TODO: Add JWT token expiration check if needed
+        // For now, we assume the token is valid if it exists
+        Logger.info('User is logged in with valid token');
+        return true;
+      }
+      
+      Logger.info('User is not logged in - missing token');
+      return false;
     } catch (e) {
       Logger.error('Failed to check login status', e);
       return false;
@@ -110,6 +120,7 @@ class TokenService {
   }) async {
     try {
       await saveToken(token);
+      // Only save refresh token if provided (for future compatibility)
       if (refreshToken != null) {
         await saveRefreshToken(refreshToken);
       }

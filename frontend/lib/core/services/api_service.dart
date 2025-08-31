@@ -1,8 +1,8 @@
 
 import 'package:dio/dio.dart';
 import '../utils/logger.dart';
-
 import '../config/app_config.dart';
+import 'token_service.dart';
 
 class ApiService {
   static const Duration _timeout = Duration(seconds: 30);
@@ -26,13 +26,16 @@ class ApiService {
   }) async {
     try {
       Logger.info('Making GET request to: $endpoint');
-      Logger.info('Headers: ${headers ?? {}}');
+      
+      // Add JWT token to headers if available
+      final finalHeaders = await _addAuthHeaders(headers);
+      Logger.info('Headers: $finalHeaders');
       Logger.info('Query Parameters: ${queryParameters ?? {}}');
       
       final response = await _dio.get(
         endpoint,
         queryParameters: queryParameters,
-        options: headers != null ? Options(headers: headers) : null,
+        options: Options(headers: finalHeaders),
       );
 
       return _handleResponse(response);
@@ -51,14 +54,17 @@ class ApiService {
   }) async {
     try {
       Logger.info('Making POST request to: $endpoint');
-      Logger.info('Headers: ${headers ?? {}}');
+      
+      // Add JWT token to headers if available
+      final finalHeaders = await _addAuthHeaders(headers);
+      Logger.info('Headers: $finalHeaders');
       Logger.info('Body: $body');
       
       final response = await _dio.post(
         endpoint,
         data: body,
         queryParameters: queryParameters,
-        options: headers != null ? Options(headers: headers) : null,
+        options: Options(headers: finalHeaders),
       );
 
       return _handleResponse(response);
@@ -77,14 +83,17 @@ class ApiService {
   }) async {
     try {
       Logger.info('Making PUT request to: $endpoint');
-      Logger.info('Headers: ${headers ?? {}}');
+      
+      // Add JWT token to headers if available
+      final finalHeaders = await _addAuthHeaders(headers);
+      Logger.info('Headers: $finalHeaders');
       Logger.info('Body: $body');
       
       final response = await _dio.put(
         endpoint,
         data: body,
         queryParameters: queryParameters,
-        options: headers != null ? Options(headers: headers) : null,
+        options: Options(headers: finalHeaders),
       );
 
       return _handleResponse(response);
@@ -102,13 +111,16 @@ class ApiService {
   }) async {
     try {
       Logger.info('Making DELETE request to: $endpoint');
-      Logger.info('Headers: ${headers ?? {}}');
+      
+      // Add JWT token to headers if available
+      final finalHeaders = await _addAuthHeaders(headers);
+      Logger.info('Headers: $finalHeaders');
       Logger.info('Query Parameters: ${queryParameters ?? {}}');
       
       final response = await _dio.delete(
         endpoint,
         queryParameters: queryParameters,
-        options: headers != null ? Options(headers: headers) : null,
+        options: Options(headers: finalHeaders),
       );
 
       return _handleResponse(response);
@@ -116,6 +128,34 @@ class ApiService {
       Logger.error('DELETE request failed for $endpoint', e);
       rethrow;
     }
+  }
+
+  /// Add authentication headers to requests
+  static Future<Map<String, String>> _addAuthHeaders(Map<String, String>? headers) async {
+    final finalHeaders = <String, String>{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    
+    // Add custom headers if provided
+    if (headers != null) {
+      finalHeaders.addAll(headers);
+    }
+    
+    // Add JWT token if available and not already provided
+    if (!finalHeaders.containsKey('Authorization')) {
+      try {
+        final token = await TokenService.getToken();
+        if (token != null && token.isNotEmpty) {
+          finalHeaders['Authorization'] = 'Bearer $token';
+          Logger.info('JWT token added to request headers');
+        }
+      } catch (e) {
+        Logger.error('Failed to add JWT token to headers', e);
+      }
+    }
+    
+    return finalHeaders;
   }
 
   /// Handle Dio response

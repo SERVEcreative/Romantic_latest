@@ -4,21 +4,98 @@ import '../../../shared/models/sample_data.dart';
 import '../widgets/romantic_profile_card.dart';
 import '../../../shared/models/user_profile.dart';
 import '../../../core/utils/logger.dart';
+import '../../../core/services/api_service.dart';
 
 class DiscoveryService {
-  static Future<List<UserProfile>> getProfiles({
+  // API endpoints
+  static const String _getOnlineUsersEndpoint = '/users/online';
+
+  /// Fetch online users from backend API
+  static Future<Map<String, dynamic>> getProfiles({
     int page = 1,
-    int limit = 20,
+    int limit = 10,
     Map<String, dynamic>? filters,
   }) async {
     try {
-      // TODO: Replace with real API call
-      await Future.delayed(Duration(milliseconds: 500)); // Simulate API delay
-      Logger.info('Loading profiles for discovery...');
-      return SampleData.romanticProfiles;
+      Logger.info('🔄 Fetching online users from API (page: $page, limit: $limit)...');
+      
+      // Prepare query parameters
+      final queryParams = <String, dynamic>{
+        'page': page.toString(),
+        'limit': limit.toString(),
+      };
+      
+      // Add filters if provided
+      if (filters != null) {
+        queryParams.addAll(filters);
+      }
+      
+      // Make API call
+      final response = await ApiService.get(
+        _getOnlineUsersEndpoint,
+        queryParameters: queryParams,
+      );
+      
+      Logger.success('✅ Online users fetched successfully');
+      
+      // Log the complete backend response for debugging
+      Logger.info('📊 Backend Response Structure:');
+      Logger.info('Response keys: ${response.keys.toList()}');
+      Logger.info('Success: ${response['success']}');
+      Logger.info('Users count: ${response['users']?.length ?? 'null'}');
+      Logger.info('Pagination: ${response['pagination']}');
+      Logger.info('Cached: ${response['cached']}');
+      Logger.info('Timestamp: ${response['timestamp']}');
+      
+      // Parse response and return real data
+      if (response['success'] == true && response['users'] != null) {
+        final List<dynamic> usersData = response['users'];
+        final List<UserProfile> profiles = usersData
+            .map((userData) => UserProfile.fromOnlineUserMap(userData))
+            .toList();
+        
+        Logger.success('✅ Processed ${profiles.length} real users from backend');
+        
+        // Return both profiles and pagination data
+        return {
+          'profiles': profiles,
+          'pagination': response['pagination'] ?? {},
+          'cached': response['cached'] ?? false,
+          'timestamp': response['timestamp'],
+        };
+      } else {
+        Logger.warning('⚠️ No online users found or API returned error');
+        // Fallback to sample data
+        return {
+          'profiles': SampleData.romanticProfiles,
+          'pagination': {
+            'currentPage': 1,
+            'totalPages': 1,
+            'totalUsers': SampleData.romanticProfiles.length,
+            'usersPerPage': SampleData.romanticProfiles.length,
+            'hasNextPage': false,
+            'hasPrevPage': false,
+          },
+          'cached': false,
+          'timestamp': DateTime.now().toIso8601String(),
+        };
+      }
     } catch (e) {
-      Logger.error('Failed to load profiles', e);
-      return [];
+      Logger.error('❌ Failed to fetch online users from API', e);
+      // Fallback to sample data
+      return {
+        'profiles': SampleData.romanticProfiles,
+        'pagination': {
+          'currentPage': 1,
+          'totalPages': 1,
+          'totalUsers': SampleData.romanticProfiles.length,
+          'usersPerPage': SampleData.romanticProfiles.length,
+          'hasNextPage': false,
+          'hasPrevPage': false,
+        },
+        'cached': false,
+        'timestamp': DateTime.now().toIso8601String(),
+      };
     }
   }
 

@@ -1,6 +1,7 @@
 import 'api_service.dart';
 import '../models/auth_models.dart';
 import 'token_service.dart';
+import '../utils/logger.dart';
 
 class AuthService {
   // API Endpoints
@@ -10,7 +11,7 @@ class AuthService {
   
   // static const String _loginEndpoint = '/auth/login'; // Unused for now
   static const String _logoutEndpoint = '/auth/logout';
-  static const String _refreshTokenEndpoint = '/auth/refresh-token';
+  // static const String _refreshTokenEndpoint = '/auth/refresh-token'; // Not used if backend doesn't provide refresh tokens
   static const String _forgotPasswordEndpoint = '/auth/forgot-password';
   static const String _resetPasswordEndpoint = '/auth/reset-password';
 
@@ -25,23 +26,40 @@ class AuthService {
   }
 
   /// Logout user and clear stored tokens
-  static Future<void> logout() async {
+  static Future<LogoutResponse> logout() async {
     try {
-      // Call logout API if needed
+      // Get stored token for API call
       final token = await getStoredToken();
+      
       if (token != null) {
-        await ApiService.post(
+        // Make API call to logout from server
+        final response = await ApiService.post(
           _logoutEndpoint,
           headers: {
             'Authorization': 'Bearer $token',
           },
         );
+        
+        Logger.success('Server logout successful');
+        return LogoutResponse.fromJson(response);
+      } else {
+        Logger.warning('No token found for logout');
+        return LogoutResponse(
+          success: true, 
+          message: 'No token to logout'
+        );
       }
     } catch (e) {
-      // Continue with logout even if API call fails
+      Logger.error('Server logout failed', e);
+      // Return error response but don't throw
+      return LogoutResponse(
+        success: false, 
+        message: 'Server logout failed: ${e.toString()}'
+      );
     } finally {
-      // Always clear stored tokens
+      // Always clear stored tokens regardless of server response
       await TokenService.clearAllTokens();
+      Logger.success('Local tokens cleared');
     }
   }
 
@@ -72,7 +90,19 @@ class AuthService {
         },
       );
 
-      return AuthResponse.fromJson(response);
+      final authResponse = AuthResponse.fromJson(response);
+      
+      // Store token for persistent login
+      if (authResponse.success && authResponse.token != null) {
+        await TokenService.saveAuthData(
+          token: authResponse.token!,
+          refreshToken: authResponse.refreshToken, // Will be null if not provided by backend
+          userId: authResponse.userId,
+        );
+        Logger.success('Authentication token stored for persistent login');
+      }
+
+      return authResponse;
     } catch (e) {
       rethrow;
     }
@@ -106,21 +136,21 @@ class AuthService {
     }
   }
 
-  /// Refresh access token
-  static Future<AuthResponse> refreshToken(String refreshToken) async {
-    try {
-      final response = await ApiService.post(
-        _refreshTokenEndpoint,
-        body: {
-          'refreshToken': refreshToken,
-        },
-      );
+  /// Refresh access token (only if backend supports refresh tokens)
+  // static Future<AuthResponse> refreshToken(String refreshToken) async {
+  //   try {
+  //     final response = await ApiService.post(
+  //       _refreshTokenEndpoint,
+  //       body: {
+  //         'refreshToken': refreshToken,
+  //       },
+  //     );
 
-      return AuthResponse.fromJson(response);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  //     return AuthResponse.fromJson(response);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   /// Request password reset
   static Future<void> forgotPassword(String phoneNumber) async {
