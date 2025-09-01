@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../shared/models/sample_data.dart';
-import '../widgets/romantic_profile_card.dart';
+
 import '../../../shared/models/user_profile.dart';
+import '../../../shared/models/sample_data.dart';
 import '../../../core/utils/logger.dart';
 import '../../../core/services/api_service.dart';
 

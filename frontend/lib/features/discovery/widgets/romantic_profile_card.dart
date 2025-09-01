@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../shared/models/user_profile.dart';
-import '../../coins/services/coin_service.dart';
 import '../../calls/screens/outgoing_call_screen.dart';
-import '../../calls/models/call_models.dart';
 import '../../messaging/screens/chat_screen.dart';
-import '../../messaging/models/message_models.dart';
+import '../../messaging/services/chat_service.dart';
 import '../../../core/constants/app_colors.dart';
 import 'dart:io';
 import 'dart:ui';
@@ -494,23 +492,80 @@ class _RomanticProfileCardState extends State<RomanticProfileCard> {
     );
   }
 
-  void _handleChatAction() {
+  void _handleChatAction() async {
     widget.onActionPressed('Chat', widget.profile.chatCost.toInt(), widget.profile.name);
-    final conversation = Conversation(
-      id: 'conv_${widget.profile.id}',
-      participant: widget.profile,
-      lastMessage: null,
-      lastActivity: DateTime.now(),
-      unreadCount: 0,
-      isOnline: widget.profile.online,
-    );
     
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(conversation: conversation),
-      ),
-    );
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: AppColors.primary),
+                SizedBox(height: 16),
+                Text(
+                  'Starting chat...',
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Check if conversation already exists
+      final conversation = await ChatService.checkOrCreateConversation(widget.profile.id);
+      
+      // Hide loading indicator
+      if (mounted) Navigator.of(context).pop();
+
+      if (conversation != null) {
+        // Navigate to chat screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              otherUserId: widget.profile.id,
+              otherUserName: widget.profile.name,
+              otherUserAvatar: widget.profile.image,
+              conversationId: conversation['id'],
+            ),
+          ),
+        );
+      } else {
+        // Show error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to start chat'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Hide loading indicator
+      if (mounted) Navigator.of(context).pop();
+      
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to start chat: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildActionButton(String action, IconData icon, Color color, int cost, VoidCallback onPressed) {

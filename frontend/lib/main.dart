@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'core/constants/app_constants.dart';
 import 'core/constants/app_colors.dart';
 import 'core/utils/logger.dart';
 import 'core/config/app_config.dart';
 import 'features/auth/screens/login_screen.dart';
+import 'features/messaging/providers/chat_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,20 +36,23 @@ class RomanticLoginApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey, // Add global navigation key
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-          brightness: Brightness.light,
+    return ChangeNotifierProvider(
+      create: (_) => ChatProvider(),
+      child: MaterialApp(
+        title: AppConstants.appName,
+        debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey, // Add global navigation key
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+          textTheme: GoogleFonts.poppinsTextTheme(),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppColors.primary,
+            brightness: Brightness.light,
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
+        home: const LoginScreen(),
       ),
-      home: const LoginScreen(),
     );
   }
 }

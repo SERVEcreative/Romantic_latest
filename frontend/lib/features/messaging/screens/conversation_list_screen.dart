@@ -46,7 +46,10 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ChatScreen(
-          conversation: conversation,
+          otherUserId: conversation.participant.id,
+          otherUserName: conversation.participant.name,
+          otherUserAvatar: conversation.participant.image,
+          conversationId: conversation.id,
         ),
       ),
     );
